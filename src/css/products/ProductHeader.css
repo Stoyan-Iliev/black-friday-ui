@@ -1,0 +1,16 @@
+.product-header-section {
+  display: grid;
+  place-items: center;
+  grid-auto-flow: column;
+  padding-left: 100px;
+  padding-right: 100px;
+}
+
+.product-header-section > .main-image {
+  width: 521px;
+  aspect-ratio: 1 / 1;
+}
+
+.product-header-section table .actions > * {
+  margin-right: 10px;
+}

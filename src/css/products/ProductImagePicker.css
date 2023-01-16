@@ -1,0 +1,13 @@
+.image-picker {
+  margin-top: -40px;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.image-picker .image {
+  width: 71px;
+  aspect-ratio: 1 / 1;
+  vertical-align: middle;
+  cursor: pointer;
+}
