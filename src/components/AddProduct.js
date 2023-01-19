@@ -134,7 +134,7 @@ export default function AddProduct({ open, onClose }) {
                 </BorderlessTableCell>
                 <BorderlessTableCell>
                   <FormControl fullWidth>
-                    <InputLabel>Role</InputLabel>
+                    <InputLabel>Type</InputLabel>
                     <Select
                       id="type"
                       name="type"

@@ -9,9 +9,11 @@ import { useDispatch } from "react-redux";
 import { signIn } from "../api/backendRequests";
 import { sliceSignIn } from "../redux/features/UserSlice";
 import MainNavBar from "./MainNavBar";
+import { useNavigate } from "react-router-dom";
 
 export default function SignIn() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -20,6 +22,7 @@ export default function SignIn() {
       .then((response) => {
         console.log(response.data);
         dispatch(sliceSignIn(response.data));
+        navigate("/", { replace: true });
       })
       .catch((error) => console.log(error));
   };
