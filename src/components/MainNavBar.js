@@ -66,50 +66,50 @@ export default function MainNavBar(props) {
   const handleCartModalClose = () => setCartModalOpen(false);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  // const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
   const [anchorElSettings, setAnchorElSettings] = React.useState(null);
-  const [mobileMoreAnchorElSettings, setMobileMoreAnchorElSettings] = React.useState(null);
+  // const [mobileMoreAnchorElSettings, setMobileMoreAnchorElSettings] = React.useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  // const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const isSettingsMenuOpen = Boolean(anchorElSettings);
-  const isMobileSettingsMenuOpen = Boolean(mobileMoreAnchorElSettings);
+  // const isMobileSettingsMenuOpen = Boolean(mobileMoreAnchorElSettings);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
-  };
+  // const handleMobileMenuClose = () => {
+  //   setMobileMoreAnchorEl(null);
+  // };
 
   const handleMenuClose = () => {
     setAnchorEl(null);
-    handleMobileMenuClose();
+    // handleMobileMenuClose();
   };
 
-  const handleMobileMenuOpen = (event) => {
-    setMobileMoreAnchorEl(event.currentTarget);
-  };
+  // const handleMobileMenuOpen = (event) => {
+  //   setMobileMoreAnchorEl(event.currentTarget);
+  // };
 
   const handleSettingsMenuOpen = (event) => {
     setAnchorElSettings(event.currentTarget);
   };
 
-  const handleMobileSettingsClose = () => {
-    setMobileMoreAnchorElSettings(null);
-  };
+  // const handleMobileSettingsClose = () => {
+  //   setMobileMoreAnchorElSettings(null);
+  // };
 
   const handleSettingsMenuClose = () => {
     setAnchorElSettings(null);
-    handleMobileSettingsClose();
+    // handleMobileSettingsClose();
   };
 
-  const handleSettingsMobileMenuOpen = (event) => {
-    setMobileMoreAnchorElSettings(event.currentTarget);
-  };
+  // const handleSettingsMobileMenuOpen = (event) => {
+  //   setMobileMoreAnchorElSettings(event.currentTarget);
+  // };
 
   const signOutUser = () => {
     dispatch(clearCart())
@@ -141,69 +141,69 @@ export default function MainNavBar(props) {
     </Menu>
   );
 
-  const mobileMenuId = "primary-search-account-menu-mobile";
-  const renderMobileMenu = (
-    <Menu
-      anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      id={mobileMenuId}
-      keepMounted
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={isMobileMenuOpen}
-      onClose={handleMobileMenuClose}
-    >
-      <MenuItem onClick={handleModalOpen}>
-        <IconButton size="large" color="inherit">
-          <AddBoxIcon open={isModalOpen} onClose={handleModalClose} />
-        </IconButton>
-        <p>Add Product</p>
-      </MenuItem>
-      <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="error">
-            <MailIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem>
-      <MenuItem>
-        <IconButton
-          size="large"
-          aria-label="show 17 new notifications"
-          color="inherit"
-        >
-          <Badge badgeContent={17} color="error">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
-      </MenuItem>
-    </Menu>
-  );
+  // const mobileMenuId = "primary-search-account-menu-mobile";
+  // const renderMobileMenu = (
+  //   <Menu
+  //     anchorEl={mobileMoreAnchorEl}
+  //     anchorOrigin={{
+  //       vertical: "top",
+  //       horizontal: "right",
+  //     }}
+  //     id={mobileMenuId}
+  //     keepMounted
+  //     transformOrigin={{
+  //       vertical: "top",
+  //       horizontal: "right",
+  //     }}
+  //     open={isMobileMenuOpen}
+  //     onClose={handleMobileMenuClose}
+  //   >
+  //     <MenuItem onClick={handleModalOpen}>
+  //       <IconButton size="large" color="inherit">
+  //         <AddBoxIcon open={isModalOpen} onClose={handleModalClose} />
+  //       </IconButton>
+  //       <p>Add Product</p>
+  //     </MenuItem>
+  //     <MenuItem>
+  //       <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+  //         <Badge badgeContent={4} color="error">
+  //           <MailIcon />
+  //         </Badge>
+  //       </IconButton>
+  //       <p>Messages</p>
+  //     </MenuItem>
+  //     <MenuItem>
+  //       <IconButton
+  //         size="large"
+  //         aria-label="show 17 new notifications"
+  //         color="inherit"
+  //       >
+  //         <Badge badgeContent={17} color="error">
+  //           <NotificationsIcon />
+  //         </Badge>
+  //       </IconButton>
+  //       <p>Notifications</p>
+  //     </MenuItem>
+  //     <MenuItem onClick={handleProfileMenuOpen}>
+  //       <IconButton
+  //         size="large"
+  //         aria-label="account of current user"
+  //         aria-controls="primary-search-account-menu"
+  //         aria-haspopup="true"
+  //         color="inherit"
+  //       >
+  //         <AccountCircle />
+  //       </IconButton>
+  //       <p>Profile</p>
+  //     </MenuItem>
+  //   </Menu>
+  // );
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="fixed">
         <Toolbar>
-          <IconButton
+          {/* <IconButton
             size="large"
             edge="start"
             color="inherit"
@@ -211,7 +211,7 @@ export default function MainNavBar(props) {
             sx={{ mr: 2 }}
           >
             <MenuIcon />
-          </IconButton>
+          </IconButton> */}
           <Typography
             variant="h6"
             noWrap
@@ -219,7 +219,7 @@ export default function MainNavBar(props) {
             to="/"
             sx={{
               display: {
-                xs: "none",
+                // xs: "none",
                 sm: "block",
                 textDecoration: "none",
                 color: "inherit",
@@ -267,7 +267,8 @@ export default function MainNavBar(props) {
           : null}
 
           {/* {isSignedIn ? */}
-            <Box sx={{ display: { xs: "none", md: "flex" } }}>
+            {/* <Box sx={{ display: { xs: "none", md: "flex" } }}> */}
+            <Box sx={{ display: "flex" }}>
               {isEmployee ? <><IconButton size="large" color="inherit" onClick={handleModalOpen}>
                   <AddBoxIcon />
                 </IconButton>
@@ -363,7 +364,7 @@ export default function MainNavBar(props) {
               : null}
              </Box>
 
-            <Box sx={{ display: { xs: "flex", md: "none" } }}>
+            {/* <Box sx={{ display: { xs: "flex", md: "none" } }}>
               <IconButton
                 size="large"
                 aria-label="show more"
@@ -374,11 +375,11 @@ export default function MainNavBar(props) {
               >
                 <MoreIcon />
               </IconButton>
-            </Box>
+            </Box> */}
         </Toolbar>
       </AppBar>
       <Toolbar />
-      {isSignedIn && renderMobileMenu}
+      {/* {isSignedIn && renderMobileMenu} */}
       {isSignedIn && renderMenu}
     </Box>
   );
