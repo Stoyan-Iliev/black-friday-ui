@@ -1,40 +1,80 @@
-import "../../css/products/ProductImagePicker.css";
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import MobileStepper from '@mui/material/MobileStepper';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import SwipeableViews from 'react-swipeable-views';
+import { autoPlay } from 'react-swipeable-views-utils';
 
-import IconButton from "@mui/material/IconButton";
-
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import { ListItem, Stack } from "@mui/material";
-import * as React from "react";
+// const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
 export default function ProductImagePicker({ images }) {
-  console.log(images);
+  const [activeStep, setActiveStep] = React.useState(0);
+  const maxSteps = images.length;
+
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleStepChange = (step) => {
+    setActiveStep(step);
+  };
+
   return (
-    <div className="image-picker">
-      <Stack
-        direction="row"
-        justifyContent="center"
-        alignItems="center"
-        spacing={2}
+    <Box sx={{ maxWidth: 500, flexGrow: 1, mt: 4 }}>
+      <SwipeableViews
+        axis={'x'}
+        index={activeStep}
+        onChangeIndex={handleStepChange}
+        enableMouseEvents
       >
-        <IconButton>
-          <KeyboardArrowLeftIcon />
-        </IconButton>
-
-        {images?.map((src) => {
-          return (
-            <ListItem>
-              <a href={src}>
-                <img className="image" src={src} alt={"Missing"} />
-              </a>
-            </ListItem>
-          );
-        })}
-
-        <IconButton>
-          <KeyboardArrowRightIcon />
-        </IconButton>
-      </Stack>
-    </div>
+        {images.map((image, index) => (
+          <div key={`imageList-${index}`}>
+            {Math.abs(activeStep - index) <= 2 ? (
+              <Box
+                component="img"
+                sx={{
+                  height: 500,
+                  display: 'block',
+                  maxWidth: 500,
+                  overflow: 'hidden',
+                  width: '100%',
+                }}
+                src={image}
+                alt={"Cannot load image"}
+              />
+            ) : null}
+          </div>
+        ))}
+      </SwipeableViews>
+      <MobileStepper
+        steps={maxSteps}
+        position="static"
+        activeStep={activeStep}
+        nextButton={
+          <Button
+            size="small"
+            onClick={handleNext}
+            disabled={activeStep === maxSteps - 1}
+          >
+            Next
+            <KeyboardArrowRight />
+          </Button>
+        }
+        backButton={
+          <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
+            <KeyboardArrowLeft />
+            Back
+          </Button>
+        }
+      />
+    </Box>
   );
 }

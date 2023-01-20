@@ -32,11 +32,8 @@ export default function CampaignChoice() {
     allCampaigns();
   }, []);
 
-  console.log(campaigns);
-
   return (
     <>
-      <MainNavBar />
       <FormControl fullWidth>
         <InputLabel>Cmpaigns</InputLabel>
         <Select

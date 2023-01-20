@@ -4,6 +4,9 @@ import { getAllProducts } from "../api/backendRequests";
 import { useEffect, useState } from "react";
 import { filter } from "../utils/constants";
 import ProductList from "./ProductList";
+import Container from '@mui/material/Container';
+import { productTypes } from "../utils/constants";
+
 
 export default function Home() {
   // const [products, setProducts] = useState([]);
@@ -12,9 +15,14 @@ export default function Home() {
   const allProducts = () => {
     getAllProducts()
       .then((response) => {
-        console.log(response.data);
+        console.log("U HOME: ", response.data);
+        for(let i = 0; i < 3; i++) {
+          console.log("U loop: ", i)
+          response.data["Computers"] = response.data["Computers"].concat(response.data["Computers"])
+          console.log(response.data)
+        }
         // setProducts(response.data);
-        setFilteredProducts(filter(response.data));
+        setFilteredProducts(response.data);
         // setLoading(true);
       })
       .catch((error) => {
@@ -31,11 +39,10 @@ export default function Home() {
 
   const renderFilteredProducts = () => {
     let productsResult = [];
-    console.log("govna");
-    console.log(filteredProducts);
     for (let entry of filteredProducts.entries()) {
       const type = entry[0];
       const products = entry[1];
+      console.log("opa: ", filteredProducts)
       const product = <ProductList products={products} type={type} />;
       productsResult.push(product);
     }
@@ -45,8 +52,10 @@ export default function Home() {
 
   return (
     <div>
-      <MainNavBar />
-      {renderFilteredProducts()}
+      <Container sx={{mt: 3}}>
+        {productTypes.map(productType => <ProductList products={filteredProducts[productType]} type={productType} />)}
+      {/* {renderFilteredProducts()} */}
+      </Container>
     </div>
   );
 }

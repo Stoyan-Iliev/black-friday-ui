@@ -39,7 +39,6 @@ export default function SignUp() {
 
   return (
     <div>
-      <MainNavBar />
       <Box
         component="form"
         sx={{

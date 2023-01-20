@@ -9,10 +9,13 @@ import AddProduct from "./components/AddProduct";
 import ProductPage from "./components/product/ProductPage";
 import Home from "./components/Home";
 import CampaignChoice from "./components/CampaingChoice";
+import Cart from "./components/Cart";
+import CartPage from "./components/CartPage";
 
 function App() {
   return (
     <div className="App">
+      <MainNavBar />
       {
         // isLoggedIn ? (
         <Routes>
@@ -22,6 +25,7 @@ function App() {
           <Route path="/signIn/" element={<SignIn />} />
           <Route path="/signUp/" element={<SignUp />} />
           <Route path="/campaignChoice/" element={<CampaignChoice />} />
+          <Route path="/cart/" element={<CartPage />} />
           <Route path="*" element={<Home />} />
         </Routes>
         // ) : (

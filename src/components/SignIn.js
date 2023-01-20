@@ -29,7 +29,6 @@ export default function SignIn() {
 
   return (
     <div>
-      <MainNavBar></MainNavBar>
 
       <Box
         component="form"

@@ -31,11 +31,11 @@ export default function ProductDetails({ product }) {
   return (
     <div
       className="product-details"
-      style={{
-        marginLeft: "10%",
-        marginRight: "10%",
-        width: "80%",
-      }}
+      // style={{
+      //   marginLeft: "10%",
+      //   marginRight: "10%",
+      //   width: "80%",
+      // }}
     >
       <Typography variant="h5" align="center">
         Description
