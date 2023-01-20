@@ -11,6 +11,35 @@ import Grid from "@mui/material/Grid";
 import { signUp } from "../api/backendRequests";
 import { useNavigate } from "react-router-dom";
 
+function getDefaultValidations() {
+  return {
+      firstName: {
+          error: false,
+          message: ""
+      },
+      lastName: {
+          error: false,
+          message: ""
+      },
+      email: {
+          error: false,
+          message: ""
+      },
+      username: {
+          error: false,
+          message: ""
+      },
+      password: {
+          error: false,
+          message: ""
+      },
+      matchingPassword: {
+          error: false,
+          message: ""
+      }
+  }
+}
+
 export default function SignUp() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -18,6 +47,7 @@ export default function SignUp() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [matchingPassword, setMatchingPassword] = useState("");
+  const [validations, setValidations] = useState(getDefaultValidations());
 
   let navigate = useNavigate();
 
@@ -31,11 +61,21 @@ export default function SignUp() {
       matchingPassword: matchingPassword,
     })
       .then((response) => {
-        console.log(response.data);
         navigate("../signIn", { replace: true });
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        handleValidations(error.response.data)
+      });
   };
+
+  const handleValidations = (validationResponse) => {
+    let validations = getDefaultValidations();
+    validationResponse.violations && validationResponse.violations.forEach(violaion => {
+        validations[violaion.fieldName].error = true;
+        validations[violaion.fieldName].message = violaion.message;
+    });
+    setValidations(validations);
+  }
 
   return (
     <Container sx={{mt: 4}}>
@@ -66,6 +106,8 @@ export default function SignUp() {
               id="firstName"
               label="First Name"
               onChange={(event) => setFirstName(event.target.value)}
+              error={validations.firstName.error}
+              helperText={validations.firstName.message}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -74,6 +116,8 @@ export default function SignUp() {
               id="lastName"
               label="LastName"
               onChange={(event) => setLastName(event.target.value)}
+              error={validations.lastName.error}
+              helperText={validations.lastName.message}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -82,6 +126,8 @@ export default function SignUp() {
               id="email"
               label="Email"
               onChange={(event) => setEmail(event.target.value)}
+              error={validations.email.error}
+              helperText={validations.email.message}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -90,6 +136,8 @@ export default function SignUp() {
               id="username"
               label="Username"
               onChange={(event) => setUsername(event.target.value)}
+              error={validations.username.error}
+              helperText={validations.username.message}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -100,6 +148,8 @@ export default function SignUp() {
               type="password"
               autoComplete="current-password"
               onChange={(event) => setPassword(event.target.value)}
+              error={validations.password.error}
+              helperText={validations.password.message}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -110,6 +160,8 @@ export default function SignUp() {
               type="password"
               autoComplete="current-password"
               onChange={(event) => setMatchingPassword(event.target.value)}
+              error={validations.matchingPassword.error}
+              helperText={validations.matchingPassword.error}
             />
           </Grid>
         </Grid>

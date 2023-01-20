@@ -8,13 +8,9 @@ export const CartSlice = createSlice({
   },
   reducers: {
     addProduct: (state, action) => {
-      console.log("In add: ", action.payload)
-      console.log("state products: ", state.products)
       const existingProduct = state.products.find(product => product.id === action.payload.id);
       if (existingProduct) {
-        console.log("Existing: ", existingProduct)
         existingProduct.selectedCount++;
-        console.log("Check string: ", action.payload.price)
         existingProduct.combinedPrice += action.payload.price;
       } else {
         const cartProduct = {
@@ -28,7 +24,6 @@ export const CartSlice = createSlice({
       // state.totalPrice = 0;
     },
     changeProductCount: (state, action) => {
-      console.log("CHANGE COUNT: ", action.payload)
       const existingProduct = state.products.find(product => product.id === action.payload.id);
       const removed = existingProduct.selectedCount - action.payload.newCount;
       const priceChange = existingProduct.price * removed;

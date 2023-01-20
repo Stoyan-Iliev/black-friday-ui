@@ -54,7 +54,6 @@ const CustomSwitch = styled(Switch)(({ theme }) => ({
 
 export default function MaterialUISwitch(props) {
     const theme = useTheme();
-    console.log("THEME: ", theme)
     const themeSwitchChecked = theme.palette.mode === "dark"
 
     return (

@@ -62,7 +62,6 @@ export default function AddProduct({ open, onClose }) {
       user.accessToken
     )
       .then((response) => {
-        console.log(response.data);
       })
       .catch((error) => console.log(error));
 
@@ -80,7 +79,6 @@ export default function AddProduct({ open, onClose }) {
         <Box sx={style}>
           <h3 style={{ textAlign: "center" }}>Add New Product</h3>
           {products.map((product) => {
-            console.log(product);
             return (
               <Card sx={{ maxWidth: 200, margin: "5px" }}>
                 <CardActionArea>

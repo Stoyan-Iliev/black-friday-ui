@@ -15,6 +15,7 @@ import {
   FormControl,
   InputLabel,
   Select,
+  FormHelperText
 } from "@mui/material";
 import styled from "@emotion/styled";
 import { useSelector } from "react-redux";
@@ -34,6 +35,35 @@ const style = {
   p: 4,
   justifyItems: "center",
 };
+
+function getDefaultValidations() {
+  return {
+      name: {
+          error: false,
+          message: ""
+      },
+      type: {
+          error: false,
+          message: ""
+      },
+      price: {
+          error: false,
+          message: ""
+      },
+      minPrice: {
+          error: false,
+          message: ""
+      },
+      Model: {
+          error: false,
+          message: ""
+      },
+      Brand: {
+          error: false,
+          message: ""
+      }
+  }
+}
 
 const BorderlessTableCell = styled(TableCell)(() => ({
   borderBottom: "none",
@@ -59,6 +89,7 @@ export default function AddProduct({ open, onClose, product }) {
   const [imagesNames, setImagesNames] = useState([]);
   const [model, setModel] = useState("");
   const [brand, setBrand] = useState("");
+  const [validations, setValidations] = useState(getDefaultValidations());
 
   const roles = useSelector((state) => state.user.roles);
 
@@ -109,6 +140,15 @@ export default function AddProduct({ open, onClose, product }) {
     setImagesNames(names);
   };
 
+  const handleValidations = (validationResponse) => {
+    let validations = getDefaultValidations();
+    validationResponse.violations && validationResponse.violations.forEach(violaion => {
+        validations[violaion.fieldName].error = true;
+        validations[violaion.fieldName].message = violaion.message;
+    });
+    setValidations(validations);
+  }
+
   const addProduct = () => {
     createProduct(
       {
@@ -130,7 +170,10 @@ export default function AddProduct({ open, onClose, product }) {
         enqueueSnackbar("Product Added Successfully", { variant: "success" });
         closeOut();
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data)
+        handleValidations(error.response.data);
+      });
   };
 
   const editProduct = () => {
@@ -175,10 +218,12 @@ export default function AddProduct({ open, onClose, product }) {
                     label="Name"
                     onChange={(event) => setName(event.target.value)}
                     value={name}
+                    error={validations.name.error}
+                    helperText={validations.name.message}
                   />
                 </BorderlessTableCell>
                 <BorderlessTableCell>
-                  <FormControl fullWidth>
+                  <FormControl fullWidth error={validations.type.error} >
                     <InputLabel>Type</InputLabel>
                     <Select
                       id="type"
@@ -186,6 +231,7 @@ export default function AddProduct({ open, onClose, product }) {
                       value={type}
                       label="Type"
                       onChange={(event) => setType(event.target.value)}
+                      helperText={validations.type.message}
                     >
                       {productTypes.map((type, index) => {
                         return (
@@ -195,6 +241,7 @@ export default function AddProduct({ open, onClose, product }) {
                         );
                       })}
                     </Select>
+                    <FormHelperText>{validations.type.message}</FormHelperText>
                   </FormControl>
                 </BorderlessTableCell>
               </TableRow>
@@ -205,6 +252,8 @@ export default function AddProduct({ open, onClose, product }) {
                     label="Model"
                     onChange={(event) => setModel(event.target.value)}
                     value={model}
+                    error={validations.Model.error}
+                    helperText={validations.Model.message}
                   />
                 </BorderlessTableCell>
                 <BorderlessTableCell>
@@ -213,6 +262,8 @@ export default function AddProduct({ open, onClose, product }) {
                     label="Brand"
                     onChange={(event) => setBrand(event.target.value)}
                     value={brand}
+                    error={validations.Brand.error}
+                    helperText={validations.Brand.message}
                   />
                 </BorderlessTableCell>
               </TableRow>
@@ -223,6 +274,8 @@ export default function AddProduct({ open, onClose, product }) {
                     label="Price"
                     onChange={(event) => setPrice(event.target.value)}
                     value={price}
+                    error={validations.price.error}
+                    helperText={validations.price.message}
                   />
                 </BorderlessTableCell>
                 <BorderlessTableCell>
@@ -231,6 +284,8 @@ export default function AddProduct({ open, onClose, product }) {
                     label="Minimal Allowed Price"
                     onChange={(event) => setMinAllowedPrice(event.target.value)}
                     value={minAllowedPrice}
+                    error={validations.minPrice.error}
+                    helperText={validations.minPrice.message}
                   />
                 </BorderlessTableCell>
               </TableRow>

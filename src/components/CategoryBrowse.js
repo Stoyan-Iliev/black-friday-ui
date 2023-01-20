@@ -43,7 +43,6 @@ export default function CategoryBrowse() {
   };
 
   const handleMaxPriceFilterChange = (event) => {
-    console.log(event.target.value);
     if (event.target.value >= 0) {
       setSearchMaxPrice(event.target.value);
     } else {
@@ -62,19 +61,13 @@ export default function CategoryBrowse() {
   };
 
   function filterProducts(list) {
-    console.log(searchName);
     let searchNameToLower = searchName.toLowerCase();
     let searchBrandToLower = searchBrand.toLowerCase();
     let searchModelToLower = searchModel.toLowerCase();
-    // console.log(searchModelToLower)
     let answer = list.filter((product) => {
       const productName = product.name.toLowerCase();
-      console.log(searchNameToLower);
-      console.log(productName);
-      // console.log()
       const productBrand = product.brand.toLowerCase();
       const productModel = product.model.toLowerCase();
-      // console.log(productModel)
       return (
         productName.includes(searchNameToLower) &&
         productBrand.includes(searchBrandToLower) &&
@@ -84,7 +77,6 @@ export default function CategoryBrowse() {
         checkIsOnSale(product.onSale, searchOnlyOnSale)
       );
     });
-    console.log(answer);
     return answer;
   }
 
@@ -109,11 +101,9 @@ export default function CategoryBrowse() {
   };
 
   const fillCategoryProductsList = () => {
-    // clearFilters();
     getProductsByCategory(category)
       .then((response) => {
         setProducts(response.data);
-        // setFilteredProducts(filterProducts(response.data));
       })
       .catch((error) => {
         console.log(error);
@@ -124,15 +114,8 @@ export default function CategoryBrowse() {
     fillCategoryProductsList();
   }, [category]);
 
-  // useEffect(() => {
-  //     console.log("call")
-  //     console.log(filterProducts(products))
-  //     setFilteredProducts(filterProducts(products));
-  // }, [searchName, searchBrand, searchModel, searchMinPrice, searchMaxPrice, isSearchByMaxPrice, searchOnlyOnSale]);
-
   return (
     <Container sx={{ mt: 3 }}>
-      {console.log("test")}
       <Grid container spacing={4} sx={{ mt: 0, mb: 4 }}>
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
           <Typography
