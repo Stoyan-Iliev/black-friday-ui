@@ -24,6 +24,7 @@ export default function ProductPreview({ product, handleUpdateClose }) {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart);
   const roles = useSelector((state) => state.user.roles);
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
   const [openSnackBar, setSnackBarOpen] = React.useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -50,8 +51,12 @@ export default function ProductPreview({ product, handleUpdateClose }) {
     roles && (roles.includes("ROLE_EMPLOYEE") || roles.includes("ROLE_ADMIN"));
 
   const addProductToCart = (e) => {
-    enqueueSnackbar("Product added to cart", { variant: "success" });
-    dispatch(addProduct(product));
+    if (isLoggedIn) {
+      enqueueSnackbar("Product added to cart", { variant: "success" });
+      dispatch(addProduct(product));
+    } else {
+      enqueueSnackbar("You need to be logged in to add to the cart", { variant: "info" });
+    }
   };
 
   const handleProfileMenuOpen = (event) => {

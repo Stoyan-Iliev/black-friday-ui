@@ -31,6 +31,7 @@ export default function ProductPage() {
   const { enqueueSnackbar } = useSnackbar();
 
   const roles = useSelector((state) => state.user.roles);
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
   const isEmployee =
     roles && (roles.includes("ROLE_EMPLOYEE") || roles.includes("ROLE_ADMIN"));
 
@@ -75,8 +76,12 @@ export default function ProductPage() {
   );
 
   const addToCart = () => {
-    dispatch(addProduct(product));
-    enqueueSnackbar("Product added to cart", { variant: "success" });
+    if (isLoggedIn) {
+      dispatch(addProduct(product));
+      enqueueSnackbar("Product added to cart", { variant: "success" });
+    } else {
+      enqueueSnackbar("You need to be logged in to add to the cart", { variant: "info" });
+    }
   };
 
   const renderStocksLabel = () => {
