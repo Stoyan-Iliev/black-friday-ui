@@ -125,7 +125,7 @@ export default function CartPage() {
     return (
         <Container>
             <Typography variant="h3" sx={{m:2}}>Shopping Cart</Typography>
-            <Stack spacing={2} style={{backgroundColor:lightBlue, padding:"1rem", marginBottom:"2.5rem", borderRadius:"4px"}}>
+            <Stack spacing={2} style={{padding:"1rem", marginBottom:"2.5rem", borderRadius:"4px"}}>
             {cart.products.length > 0 ?
                 <FullWidthTextField
                 id="address"

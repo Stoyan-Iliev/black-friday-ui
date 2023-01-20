@@ -99,6 +99,14 @@ export function getAllProducts() {
   return backendRequest.get("/products");
 }
 
+export function getProductsByCategory(category) {
+  return backendRequest.get(`/products/${category}`);
+}
+
 export function getAllCampaigns() {
   return backendRequest.get("/campaigns");
+}
+
+export function verifyEmail(code) {
+  return backendRequest.get(`/user/verify?code=${code}`);
 }

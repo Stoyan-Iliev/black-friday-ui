@@ -12,7 +12,7 @@ export default function ProductPreviewLinkCard({ category }) {
   const navigate = useNavigate();
   return (
     <Card sx={{ height: "342.75px" }}>
-      <CardActionArea onClick={() => navigate("/products/")} sx={{ height: "100%" }}>
+      <CardActionArea onClick={() => navigate(`/category/${category}`)} sx={{ height: "100%" }}>
         <CardContent>
           <Box sx={{ display: "flex", justifyContent: "center"}}>
             <div>

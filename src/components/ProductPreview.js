@@ -15,8 +15,6 @@ export default function ProductPreview({ product }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart);
-  console.log("Cart: ", cart.products)
-  console.log("Price: ", cart.totalPrice)
   const [openSnackBar, setSnackBarOpen] = React.useState(false);
   const { enqueueSnackbar } = useSnackbar(); 
 
