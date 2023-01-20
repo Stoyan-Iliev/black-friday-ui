@@ -55,10 +55,9 @@ export default function CreateCampaignModal({ open, onClose }) {
     )
       .then((response) => {
         console.log(response.data);
+        closeOut();
       })
       .catch((error) => console.log(error));
-
-    closeOut();
   };
 
   return (

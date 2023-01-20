@@ -10,6 +10,8 @@ import { signIn } from "../api/backendRequests";
 import { sliceSignIn } from "../redux/features/UserSlice";
 import MainNavBar from "./MainNavBar";
 import { useNavigate } from "react-router-dom";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { Avatar, Hidden, Typography, Container } from "@mui/material";
 
 export default function SignIn() {
   const dispatch = useDispatch();
@@ -28,12 +30,11 @@ export default function SignIn() {
   };
 
   return (
-    <div>
-
+    <Container  sx={{mt: 4}}>
       <Box
         component="form"
         sx={{
-          "& .MuiTextField-root": { m: 1, width: "25ch" },
+          // "& .MuiTextField-root": { m: 1, width: "25ch" },
           display: "grid",
           placeItems: "center",
           textAlign: "center",
@@ -41,9 +42,16 @@ export default function SignIn() {
         noValidate
         autoComplete="off"
       >
+        <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h4">
+          Sign in
+        </Typography>
         <TextField
           id="username"
           label="Username"
+          sx={{mt: 2}}
           onChange={(event) => setUsername(event.target.value)}
         />
         <TextField
@@ -51,12 +59,13 @@ export default function SignIn() {
           label="Password"
           type="password"
           autoComplete="current-password"
+          sx={{mt: 2}}
           onChange={(event) => setPassword(event.target.value)}
         />
-        <Button variant="contained" onClick={signInUser}>
+        <Button variant="contained" onClick={signInUser} sx={{mt: 2}}>
           Sign In
         </Button>
       </Box>
-    </div>
+    </Container>
   );
 }

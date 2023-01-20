@@ -5,7 +5,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import MainNavBar from "./MainNavBar";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { Avatar, Hidden, Typography } from "@mui/material";
+import { Avatar, Hidden, Typography, Container } from "@mui/material";
 import Grid from "@mui/material/Grid";
 
 import { signUp } from "../api/backendRequests";
@@ -38,14 +38,17 @@ export default function SignUp() {
   };
 
   return (
-    <div>
+    <Container sx={{mt: 4}}>
       <Box
         component="form"
         sx={{
-          "& .MuiTextField-root": { m: 1 },
+          // "& .MuiTextField-root": { m: 1 },
+          marginLeft: 'auto',
+          marginRight: 'auto',
           display: "grid",
           placeItems: "center",
           textAlign: "center",
+          maxWidth: "50rem",
         }}
         noValidate
         autoComplete="off"
@@ -56,10 +59,10 @@ export default function SignUp() {
         <Typography component="h1" variant="h4">
           Sign up
         </Typography>
-        <Grid container spacing={2}>
+        <Grid container spacing={2} sx={{mt: 1}}>
           <Grid item xs={12} sm={6}>
             <TextField
-              sx={{ width: "75%", float: "right" }}
+              fullWidth
               id="firstName"
               label="First Name"
               onChange={(event) => setFirstName(event.target.value)}
@@ -67,7 +70,7 @@ export default function SignUp() {
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
-              sx={{ width: "75%", float: "left" }}
+              fullWidth
               id="lastName"
               label="LastName"
               onChange={(event) => setLastName(event.target.value)}
@@ -75,7 +78,7 @@ export default function SignUp() {
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
-              sx={{ width: "75%", float: "right" }}
+              fullWidth
               id="email"
               label="Email"
               onChange={(event) => setEmail(event.target.value)}
@@ -83,7 +86,7 @@ export default function SignUp() {
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
-              sx={{ width: "75%", float: "left" }}
+              fullWidth
               id="username"
               label="Username"
               onChange={(event) => setUsername(event.target.value)}
@@ -91,7 +94,7 @@ export default function SignUp() {
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
-              sx={{ width: "75%", float: "right" }}
+              fullWidth
               id="password"
               label="Password"
               type="password"
@@ -101,7 +104,7 @@ export default function SignUp() {
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
-              sx={{ width: "75%", float: "left" }}
+              fullWidth
               id="matchingPassword"
               label="Confirm Password"
               type="password"
@@ -112,12 +115,12 @@ export default function SignUp() {
         </Grid>
         <Button
           variant="contained"
-          sx={{ width: "15%", height: "3rem" }}
+          sx={{ width: "15%", height: "3rem", mt: 3 }}
           onClick={signUpUser}
         >
           Sign Up
         </Button>
       </Box>
-    </div>
+    </Container>
   );
 }

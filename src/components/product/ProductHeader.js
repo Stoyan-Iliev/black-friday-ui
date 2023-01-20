@@ -13,9 +13,13 @@ import { styled } from "@mui/system";
 import { useDispatch } from "react-redux";
 import { addProduct } from "../../redux/features/CartSlice";
 import ProductImagePicker from "./ProductImagePicker";
+import { useSnackbar } from 'notistack';
+
 
 export default function ProductHeader({ product }) {
   const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar(); 
+
   const { name, price, count, imageUrls } = product;
   const BorderlessTableCell = styled(TableCell)(() => ({
     borderBottom: "none",
@@ -35,6 +39,7 @@ export default function ProductHeader({ product }) {
 
   const addToCart = () => {
     dispatch(addProduct(product));
+    enqueueSnackbar('Product added to cart', { variant: "success" });
   };
 
   return (

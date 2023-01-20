@@ -1,20 +1,33 @@
 import { Grid, IconButton, Typography } from "@mui/material";
 import ProductPreview from "./ProductPreview";
+import ProductPreviewLinkCard from "./ProductPreviewLinkCard";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import SwipeableViews from 'react-swipeable-views';
 import React, { useState } from "react";
-import AliceCarousel from 'react-alice-carousel';
-import 'react-alice-carousel/lib/alice-carousel.css';
 
 export default function ProductList({ products, type }) {
   
 
   const sliceIntoChunks = (arr, chunkSize) => {
     const res = [];
+    if (arr.length >= 30) {
+      arr = arr.slice(0, 29); //TESTVAI TVA S POVECHE !!REMINDER
+    }
     for (let i = 0; i < arr.length; i += chunkSize) {
-        const chunk = arr.slice(i, i + chunkSize);
+      const chunk = arr.slice(i, i + chunkSize);
+      if (i + chunkSize >= arr.length) {
+        // i++;
+        if (chunk.length < chunkSize) {
+          chunk.push("LINK");
+          res.push(chunk);
+        } else {
+          res.push(chunk);
+          res.push(["LINK"])
+        }
+      } else {
         res.push(chunk);
+      }
     }
     return res;
   }
@@ -35,7 +48,8 @@ export default function ProductList({ products, type }) {
   const [productLength, setProductLength] = useState(5);
   const isEmpty = !products || products.length === 0;
   const [activeStep, setActiveStep] = useState(0);
-  const maxSteps = products && products.length / productLength;
+  const productsListLength = products && products.length <= 29 ? (products.length + 1) : 30;
+  const maxSteps = productsListLength && productsListLength / productLength;
 
   React.useEffect(() => {
     function handleResize() {
@@ -50,12 +64,18 @@ export default function ProductList({ products, type }) {
         newLength = 1;
       }
       if (newLength !== productLength) {
+        if (newLength > productLength) {
+          setActiveStep(0);
+        }
         setProductLength(newLength)
       }
-  }
+    }
 
+    handleResize();
     window.addEventListener('resize', handleResize)
   })
+
+  
 
   const responsive = {
     0: { items: 2 },
@@ -87,17 +107,21 @@ export default function ProductList({ products, type }) {
             onChangeIndex={handleStepChange}
             enableMouseEvents
           >
-            {sliceIntoChunks(products, productLength).map((slicedProducts, index) => (
-            <div>
-              <Grid container direction="row" sx={{mb: 3}}>
+            {sliceIntoChunks(products, productLength).map((slicedProducts, upperIndex) => (
+            // <div>
+            <>
+              <Grid container direction="row" spacing={1} sx={{mb: 3}}>
                 {slicedProducts.map((p, index) => {
                   return <Grid item xs={12} sm={6} md={3} lg={2.4} xl={2.4}>
-                      <ProductPreview product={p} key={index} />
-                    </Grid>
+                      {p === "LINK" ? <ProductPreviewLinkCard/> : <ProductPreview product={p} key={index} />}
+                  </Grid>
                 })}
               </Grid>
-            </div>
+            </>
+            // </div>
             ))}
+            {/* <Grid item xs={12} sm={6} md={3} lg={2.4} xl={2.4}> */}
+            {/* </Grid> */}
           </SwipeableViews>
         </Grid>
         <Grid item xs={1}>

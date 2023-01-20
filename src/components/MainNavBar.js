@@ -26,6 +26,12 @@ import CreateCampaignModal from "./CreateCmpaignModal";
 import { useSelector, useDispatch } from 'react-redux'
 import { sliceSignOut } from '../redux/features/UserSlice';
 import { clearCart } from '../redux/features/CartSlice';
+import SettingsIcon from '@mui/icons-material/Settings';
+import Tooltip from '@mui/material/Tooltip';
+import Popover from '@mui/material/Popover';
+import MaterialUISwitch from "./MaterialUISwitch";
+import { productTypes } from "../utils/constants";
+
 
 
 const Search = styled("div")(({ theme }) => ({
@@ -68,16 +74,22 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function MainNavBar() {
+export default function MainNavBar(props) {
   const user = useSelector((state) => state.user);
   const products = useSelector((state) => state.cart.products)
   console.log("USER: ", user)
   const isSignedIn = user.isLoggedIn;
   const isAdmin = user.roles && user.roles.includes("ROLE_ADMIN");
   const isEmployee = user.roles &&  user.roles.includes("ROLE_EMPLOYEE") || isAdmin;
-  console.log("IS_ADMIN: ", isAdmin)
-  console.log("IS_EMPLOYEE: ", isEmployee )
   const isClient = user.roles &&  user.roles.includes("ROLE_CLIENT");
+
+  const [themeSwitchChecked, setThemeSwitchChecked] = React.useState(true);
+
+  const handleThemeSwitchChange = (event) => {
+    console.log("CHANGE IT")
+    setThemeSwitchChecked(event.target.checked);
+  };
+
   const dispatch = useDispatch();
   const [isModalOpen, setModalOpen] = React.useState(false);
   const handleModalOpen = () => setModalOpen(true);
@@ -98,8 +110,14 @@ export default function MainNavBar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
+  const [anchorElSettings, setAnchorElSettings] = React.useState(null);
+  const [mobileMoreAnchorElSettings, setMobileMoreAnchorElSettings] = React.useState(null);
+
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  const isSettingsMenuOpen = Boolean(anchorElSettings);
+  const isMobileSettingsMenuOpen = Boolean(mobileMoreAnchorElSettings);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -116,6 +134,23 @@ export default function MainNavBar() {
 
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
+  };
+
+  const handleSettingsMenuOpen = (event) => {
+    setAnchorElSettings(event.currentTarget);
+  };
+
+  const handleMobileSettingsClose = () => {
+    setMobileMoreAnchorElSettings(null);
+  };
+
+  const handleSettingsMenuClose = () => {
+    setAnchorElSettings(null);
+    handleMobileSettingsClose();
+  };
+
+  const handleSettingsMobileMenuOpen = (event) => {
+    setMobileMoreAnchorElSettings(event.currentTarget);
   };
 
   const signOutUser = () => {
@@ -236,92 +271,141 @@ export default function MainNavBar() {
             Black Friday Store
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
+
           {!isSignedIn ? <><Typography
-            variant="h6"
-            noWrap
-            component={Link}
-            to="/signIn"
-            sx={{
-              display: {
-                xs: "none",
-                sm: "block",
-                textDecoration: "none",
-                color: "inherit",
-                marginLeft: "10px",
-              },
-            }}
-          >
-            Sign In
-          </Typography>
-          <Typography
-            variant="h6"
-            noWrap
-            component={Link}
-            to="/signUp"
-            sx={{
-              display: {
-                xs: "none",
-                sm: "block",
-                textDecoration: "none",
-                color: "inherit",
-                marginLeft: "10px",
-              },
-            }}
-          >
-            Sign Up
-          </Typography></> : null}
-          {isSignedIn ?
-            <><Box sx={{ display: { xs: "none", md: "flex" } }}>
+              variant="h6"
+              noWrap
+              component={Link}
+              to="/signIn"
+              sx={{
+                display: {
+                  xs: "none",
+                  sm: "block",
+                  textDecoration: "none",
+                  color: "inherit",
+                  marginLeft: "10px",
+                },
+              }}
+            >
+              Sign In
+            </Typography>
+            <Typography
+              variant="h6"
+              noWrap
+              component={Link}
+              to="/signUp"
+              sx={{
+                display: {
+                  xs: "none",
+                  sm: "block",
+                  textDecoration: "none",
+                  color: "inherit",
+                  marginLeft: "10px",
+                },
+              }}
+            >
+              Sign Up
+            </Typography></> 
+          : null}
+
+          {/* {isSignedIn ? */}
+            <Box sx={{ display: { xs: "none", md: "flex" } }}>
               {isEmployee ? <><IconButton size="large" color="inherit" onClick={handleModalOpen}>
-                <AddBoxIcon />
-              </IconButton>
-              <AddProduct open={isModalOpen} onClose={handleModalClose} />
-              <IconButton
-                size="large"
-                color="inherit"
-                onClick={handleUpgradeModalOpen}
-              >
-                <UpgradeIcon />
-              </IconButton>
-              {isAdmin ? <UpgradeUserModal
-                open={isUpgradeModalOpen}
-                onClose={handleUpgradeModalClose}
-              /> : null}
-              <IconButton
-                size="large"
-                color="inherit"
-                onClick={handleCampaignModalOpen}
-              >
-                <CreateOutlinedIcon />
-              </IconButton>
-              <CreateCampaignModal
-                open={isCampaignModalOpen}
-                onClose={handleCampaignModalClose}
-              /></> : null}
-              {isClient ? <IconButton
-                size="large"
-                color="inherit"
-                component={Link}
-                to="/cart"
-                // onClick={handleCartModalOpen}
-              >
-                <Badge badgeContent={products.length} color="error">
-                  <ShoppingCartIcon />
-                </Badge>
-              </IconButton> : null}
+                  <AddBoxIcon />
+                </IconButton>
+                <AddProduct open={isModalOpen} onClose={handleModalClose} /></>
+              : null}
+
+              {isAdmin ? <><IconButton
+                  size="large"
+                  color="inherit"
+                  onClick={handleUpgradeModalOpen}
+                >
+                  <UpgradeIcon />
+                </IconButton>
+                <UpgradeUserModal
+                  open={isUpgradeModalOpen}
+                  onClose={handleUpgradeModalClose}
+                /></> 
+              : null}
+
+              {isEmployee ? <><IconButton
+                  size="large"
+                  color="inherit"
+                  onClick={handleCampaignModalOpen}
+                >
+                  <CreateOutlinedIcon />
+                </IconButton>
+                <CreateCampaignModal
+                  open={isCampaignModalOpen}
+                  onClose={handleCampaignModalClose}
+                /></> 
+              : null}
+
+              {isClient ? <><IconButton
+                  size="large"
+                  color="inherit"
+                  component={Link}
+                  to="/cart"
+                  // onClick={handleCartModalOpen}
+                >
+                  <Badge badgeContent={products.length} color="error">
+                    <ShoppingCartIcon />
+                  </Badge>
+                </IconButton></> 
+              : null}
+
+              {/* {isSignedIn ?  */}
+              <><IconButton size="large" onClick={handleSettingsMenuOpen} color="inherit">
+                  <SettingsIcon/>
+                </IconButton>
+                <Popover
+                  id="menu-appbar"
+                  open={isSettingsMenuOpen}
+                  anchorEl={anchorElSettings}
+                  onClose={handleSettingsMenuClose}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                >
+                  <Box
+                    sx={{
+                    marginY: 3,
+                    marginX: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    }}
+                  >
+                    <Typography sx={{mb: 1}}>Change Theme</Typography>
+                    {console.log("SWITCH: ", themeSwitchChecked)}
+                    <MaterialUISwitch 
+                      handleSwitch={() => props.changeTheme() }
+                    />
+                  </Box>
+                </Popover></> 
+              {/* // : null} */}
               {/* <Cart open={isCartModalOpen} onClose={handleCartModalClose} /> */}
+
               {isSignedIn ? <IconButton
-                size="large"
-                edge="end"
-                aria-label="account of current user"
-                aria-controls={menuId}
-                aria-haspopup="true"
-                onClick={handleProfileMenuOpen}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton> : null}
-            </Box>
+                  size="large"
+                  edge="end"
+                  aria-label="account of current user"
+                  aria-controls={menuId}
+                  aria-haspopup="true"
+                  onClick={handleProfileMenuOpen}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton> 
+              : null}
+             </Box>
+
             <Box sx={{ display: { xs: "flex", md: "none" } }}>
               <IconButton
                 size="large"
@@ -333,8 +417,7 @@ export default function MainNavBar() {
               >
                 <MoreIcon />
               </IconButton>
-            </Box></> 
-          : null}
+            </Box>
         </Toolbar>
       </AppBar>
       <Toolbar />
