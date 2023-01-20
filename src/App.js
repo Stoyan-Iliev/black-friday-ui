@@ -15,6 +15,9 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { useEffect, useState, useMemo } from "react";
 import { SnackbarProvider, useSnackbar } from 'notistack';
+import CategoryBrowse from "./components/CategoryBrowse";
+import EmailVerifiedPage from "./components/EmailVerifiedPage";
+
 
   const darkTheme = createTheme({
     palette: {
@@ -32,25 +35,15 @@ import { SnackbarProvider, useSnackbar } from 'notistack';
 function App() {
   const [mode, setMode] = useState('light');
   useEffect(() => {
-    // If there is a window
     if (typeof window !== 'undefined')
-      // When the app loads, the mode is updated to the locally stored theme if it exists or else set to light
       setMode(window.localStorage.getItem('themePreference') || 'light');
   }, []);
 
-  // const colorMode = useMemo(
-  //   () => ({
-  //     // The dark mode switch would invoke this method
-    const toggleColorMode = () => {
-        const newMode = mode === 'light' ? 'dark' : 'light';
-        window.localStorage.setItem('themePreference', newMode);
-        setMode(newMode);
-      }
-  //   }),
-  //   [],
-  // );
-
-  const theme = React.useMemo(() => createTheme({}), [mode]);
+  const toggleColorMode = () => {
+    const newMode = mode === 'light' ? 'dark' : 'light';
+    window.localStorage.setItem('themePreference', newMode);
+    setMode(newMode);
+  }
 
   return (
     <ThemeProvider theme={mode === "light" ? lightTheme : darkTheme}>
@@ -62,7 +55,8 @@ function App() {
         // isLoggedIn ? (
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/products" element={<ProductPage />} />
+          <Route path="/verified" element={<EmailVerifiedPage />} />
+          <Route path="/category/:category" element={<CategoryBrowse />} />
           <Route path="/products/:id" element={<ProductPage />} />
           <Route path="/signIn/" element={<SignIn />} />
           <Route path="/signUp/" element={<SignUp />} />
