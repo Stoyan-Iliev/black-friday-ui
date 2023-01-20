@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import {
+  Alert,
   Card,
   CardActionArea,
   CardContent,
@@ -26,8 +27,14 @@ import { Stack } from "@mui/system";
 import Paper from '@mui/material/Paper';
 import DeleteIcon from '@mui/icons-material/Delete';
 import HomeIcon from '@mui/icons-material/Home';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { changeProductCount, removeProduct, clearCart } from '../redux/features/CartSlice';
+import { blue, blueGrey } from '@mui/material/colors';
+import { useTheme } from '@mui/material/styles';
+import CustomSnackBar from "./CustomSnackBar";
+//   const { enqueueSnackbar } = useSnackbar(); 
+  import { useSnackbar } from 'notistack';
+
 
 
 const style = {
@@ -48,12 +55,16 @@ const style = {
   }));
 
 export default function CartPage() {
+    const theme = useTheme();
+    const { enqueueSnackbar } = useSnackbar(); 
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const user = useSelector((state) => state.user);
     const cart = useSelector((state) => state.cart);
   
     const [address, setAddress] = useState("");
+    const [snackBarOpen, setSnackBarOpen] = useState(false);
   
     const closeOut = () => {
       setAddress("");
@@ -75,41 +86,59 @@ export default function CartPage() {
         address: address,
       }
         makePurchase(payload, user.accessToken).then((response) => {
+            // setSnackBarOpen(true);
             dispatch(clearCart());
+            enqueueSnackbar('Purchase Successful', { variant: "success" });
+            closeOut();
             navigate("/")
             console.log(response.data);
         }).catch((error) => {
             console.log(error)
         });
   
-      closeOut();
     };
 
     const setProductCount = (id, count) => {
         console.log("Set Count: ", id, ", count: ", count)
         dispatch(changeProductCount({id: id, newCount: count}));
+        enqueueSnackbar('Product quantity changed', { variant: "success" });
     }
 
     const countToArray = (count) => {
         let array = [];
+        if (count >= 30) {
+            count = 30;
+        }
         for (let i = 1; i <= count; i++) {
             array.push(i);
         }
         return array;
     }
+
+    const removeFromCart = (id) => {
+        dispatch(removeProduct({ id }));
+        enqueueSnackbar('Product removed from cart', { variant: "success" });
+    }
+
+    const lightBlue = theme.palette.mode === "light"? blue[100] : blueGrey[900];
   
     return (
         <Container>
             <Typography variant="h3" sx={{m:2}}>Shopping Cart</Typography>
-            <Stack spacing={2} style={{backgroundColor:"#e4f1f9", padding:"1rem", borderRadius:"4px"}}>
+            <Stack spacing={2} style={{backgroundColor:lightBlue, padding:"1rem", marginBottom:"2.5rem", borderRadius:"4px"}}>
+            {cart.products.length > 0 ?
                 <FullWidthTextField
-                    id="address"
-                    error={address === "" ? true : undefined}
-                    value={address}
-                    label="Dellivery Address"
-                    onChange={(event) => setAddress(event.target.value)}
-                    required
-                />
+                id="address"
+                error={address === "" ? true : undefined}
+                value={address}
+                label="Dellivery Address"
+                onChange={(event) => setAddress(event.target.value)}
+                required
+                /> :
+                <Alert severity="info">Cart is currently empty</Alert>
+            }
+                
+                {/* </Paper> */}
                 {cart.products.map((product) => {
                     console.log(product);
                     return (
@@ -117,14 +146,14 @@ export default function CartPage() {
                         <Grid container sx={{padding: "20px"}} spacing={2}>
                             <Grid item xs={2.5}>
                             <Card sx={{ maxWidth: 200}}>
-                                <CardActionArea>
+                                {/* <CardActionArea> */}
                                 <CardMedia
                                     component="img"
                                     height="200"
                                     image={product.imageUrls && product.imageUrls[0]}
                                     alt={product.name}
                                 />
-                                </ CardActionArea>
+                                {/* </ CardActionArea> */}
                             </Card>
                             </Grid>
                             <Grid item xs={5.5} textAlign="left"  >
@@ -154,7 +183,7 @@ export default function CartPage() {
                             <Grid item xs={3}> 
                                     <Stack spacing={2} alignItems="flex-end" >
                                         <Typography variant="h3">{product.combinedPrice} lv</Typography> 
-                                        <Button variant="outlined" color="error" onClick={() => dispatch(removeProduct({id: product.id}))} startIcon={<DeleteIcon />} sx={{width:"8rem"}}>
+                                        <Button variant="outlined" color="error" onClick={() => removeFromCart(product.id)} startIcon={<DeleteIcon />} sx={{width:"8rem"}}>
                                             Delete
                                         </Button>
                                     </Stack>
@@ -163,13 +192,23 @@ export default function CartPage() {
                     </Paper>
                 );
             })}
-            <Typography>{cart.totalPrice}</Typography>
+            <Box sx={{display: "flex", flexFlow: "row-reverse"}}>
+                <div>
+                    <Typography variant="h4">Total Price: </Typography>
+                    <Typography variant="h2">{cart.totalPrice} lv</Typography>
+                </div>
+            </Box>
           </Stack>
-          <div style={{ display: "grid", placeItems: "center" }}>
-            <Button variant="contained" onClick={finishPurchase}>
-              Finish Order
-            </Button>
-          </div>
+          <div style={{ float:"center", position: "fixed", left:"50%", transform: "translateX(-50%)", bottom:50, placeItems: "center" }}>
+                {cart.products.length > 0 ? <Button variant="contained" onClick={finishPurchase} sx={{height: "3rem"}}>
+                        Finish Order
+                    </Button> :
+                    <Button component={Link} to="/" variant="contained">
+                        Back to browse
+                    </Button>
+                }
+            </div>
+          {/* <CustomSnackBar open={snackBarOpen} severity="success" message="Purchase Successful" setParentOpen={setSnackBarOpen}/> */}
         </Container>
     );
 }

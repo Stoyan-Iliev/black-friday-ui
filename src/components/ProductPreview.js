@@ -7,6 +7,8 @@ import { Button, CardActionArea, CardActions, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 import { addProduct } from '../redux/features/CartSlice';
+import CustomSnackBar from "./CustomSnackBar";
+import { useSnackbar } from 'notistack';
 
 
 export default function ProductPreview({ product }) {
@@ -15,16 +17,16 @@ export default function ProductPreview({ product }) {
   const cart = useSelector((state) => state.cart);
   console.log("Cart: ", cart.products)
   console.log("Price: ", cart.totalPrice)
+  const [openSnackBar, setSnackBarOpen] = React.useState(false);
+  const { enqueueSnackbar } = useSnackbar(); 
+
   const addProductToCart = (e) => {
-    // const productId = e.currentTarget.getAttribute("data-id");]
-    // const productToAdd = product
-    console.log("ADD Pro: ", product)
-    // const productPrice = e.currentTarget.getAttribute("data-price");
-    // console.log("id: ", productId, ", price: ", productPrice);
+    enqueueSnackbar('Product added to cart', { variant: "success" });
     dispatch(addProduct(product));
   }
+
   return (
-    <Card sx={{ margin: "5px" }}>
+    <Card sx={{ height: "342.75px", marginRight: "1px" }}>
       <CardActionArea onClick={() => navigate("/products/" + product.id)}>
         <CardMedia
           component="img"
@@ -32,8 +34,16 @@ export default function ProductPreview({ product }) {
           image={product.imageUrls && product.imageUrls[0]}
           alt={product.name}
         />
-        <CardContent>
-          <Typography variant="h5" component="div">
+        <CardContent sx={{height: 96, display: "flex",
+            alignItems: "center",
+            justifyContent: "center" }}>
+          <Typography variant="h6" component="div" sx={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              display: '-webkit-box',
+              WebkitLineClamp: '2',
+              WebkitBoxOrient: 'vertical',
+          }}>
             {product.name}
           </Typography>
         </CardContent>
