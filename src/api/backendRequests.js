@@ -79,6 +79,17 @@ export function createProduct(product, images, token) {
     .post("/product", buildFormDataWithUpload(product, images));
 }
 
+export function updateProduct(product, token) {
+  return axios
+    .create({
+      baseURL: BASE_URL,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .put(`/product/${product.id}`, product);
+}
+
 export function makePurchase(products, token) {
   return axios
     .create({
@@ -89,6 +100,18 @@ export function makePurchase(products, token) {
       },
     })
     .post("/purchase", products);
+}
+
+export function addProductToCampaign(product, campaignName, token) {
+  return axios
+    .create({
+      baseURL: BASE_URL,
+      headers: {
+        "content-type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .put(`/addProductsToCampaign?name=${campaignName}`, product);
 }
 
 export function getProductById(id) {

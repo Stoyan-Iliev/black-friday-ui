@@ -1,5 +1,6 @@
 import "../../css/products/ProductHeader.css";
 
+import { useState } from "react";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Table from "@mui/material/Table";
@@ -10,20 +11,64 @@ import TableRow from "@mui/material/TableRow";
 
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { styled } from "@mui/system";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addProduct } from "../../redux/features/CartSlice";
 import ProductImagePicker from "./ProductImagePicker";
-import { useSnackbar } from 'notistack';
+import { useSnackbar } from "notistack";
+import AddProduct from "../AddProduct";
+import { Menu, MenuItem } from "@mui/material";
 
-
-export default function ProductHeader({ product }) {
+export default function ProductHeader({ product, handleUpdateClose }) {
   const dispatch = useDispatch();
-  const { enqueueSnackbar } = useSnackbar(); 
+  const { enqueueSnackbar } = useSnackbar();
 
   const { name, price, count, imageUrls } = product;
   const BorderlessTableCell = styled(TableCell)(() => ({
     borderBottom: "none",
   }));
+  const roles = useSelector((state) => state.user.roles);
+  const isEmployee =
+    roles && (roles.includes("ROLE_EMPLOYEE") || roles.includes("ROLE_ADMIN"));
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const handleModalOpen = () => setModalOpen(true);
+  const handleModalClose = () => {
+    setModalOpen(false);
+    handleMenuClose();
+    handleUpdateClose();
+  };
+
+  const isMenuOpen = Boolean(anchorEl);
+
+  const handleProfileMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const renderMenu = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{
+        vertical: "bottom",
+        horizontal: "right",
+      }}
+      keepMounted
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      <MenuItem onClick={handleModalOpen}>Edit</MenuItem>
+      <MenuItem onClick={handleMenuClose}>Add To Campaign</MenuItem>
+    </Menu>
+  );
 
   const renderStocksLabel = () => {
     return count > 0 ? (
@@ -39,17 +84,12 @@ export default function ProductHeader({ product }) {
 
   const addToCart = () => {
     dispatch(addProduct(product));
-    enqueueSnackbar('Product added to cart', { variant: "success" });
+    enqueueSnackbar("Product added to cart", { variant: "success" });
   };
 
   return (
-    <div className="product-header-section">
-      {/* <img
-        className="main-image"
-        src={imageUrls && imageUrls[0]}
-        alt="product"
-      /> */}
-      <ProductImagePicker images={product.imageUrls} />
+    <div>
+      {/* <ProductImagePicker images={product.imageUrls} /> */}
       <TableContainer>
         <Table>
           <TableBody>
@@ -64,12 +104,30 @@ export default function ProductHeader({ product }) {
               <BorderlessTableCell>{renderStocksLabel()}</BorderlessTableCell>
             </TableRow>
             <TableRow>
-              <BorderlessTableCell>
-                <Typography variant="h6">
-                  Price: <b style={{ color: "green" }}>{price} lv</b>
-                </Typography>
-              </BorderlessTableCell>
-              <BorderlessTableCell>
+              {/* <BorderlessTableCell> */}
+              <Typography variant="h6">
+                Price: <b style={{ color: "green" }}>{price} lv</b>
+              </Typography>
+              {/* </BorderlessTableCell> */}
+              {/* <BorderlessTableCell> */}
+              {isEmployee ? (
+                <>
+                  <Button
+                    size="small"
+                    color="primary"
+                    onClick={handleProfileMenuOpen}
+                  >
+                    Edit
+                  </Button>
+                  {renderMenu}
+                  <AddProduct
+                    product={product}
+                    open={isModalOpen}
+                    onClose={handleModalClose}
+                  />
+                  {console.log("asdfasdfasdfasdf")}
+                </>
+              ) : (
                 <Button
                   fullWidth
                   size="large"
@@ -79,7 +137,8 @@ export default function ProductHeader({ product }) {
                 >
                   Buy
                 </Button>
-              </BorderlessTableCell>
+              )}
+              {/* </BorderlessTableCell> */}
             </TableRow>
           </TableBody>
         </Table>

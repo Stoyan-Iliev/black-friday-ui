@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -18,8 +18,9 @@ import {
 } from "@mui/material";
 import styled from "@emotion/styled";
 import { useSelector } from "react-redux";
-import { createProduct } from "../api/backendRequests";
+import { createProduct, updateProduct } from "../api/backendRequests";
 import { productTypes } from "../utils/constants";
+import { useSnackbar } from "notistack";
 
 const style = {
   position: "absolute",
@@ -42,8 +43,9 @@ const FullWidthTextField = styled(TextField)(() => ({
   width: "100%",
 }));
 
-export default function AddProduct({ open, onClose }) {
+export default function AddProduct({ open, onClose, product }) {
   const token = useSelector((state) => state.user.accessToken);
+  const { enqueueSnackbar } = useSnackbar();
 
   const [name, setName] = useState("");
   const [type, setType] = useState("");
@@ -58,23 +60,43 @@ export default function AddProduct({ open, onClose }) {
   const [model, setModel] = useState("");
   const [brand, setBrand] = useState("");
 
+  const roles = useSelector((state) => state.user.roles);
+
   const handleChange = (event) => {
     setChecked(event.target.checked);
   };
 
+  useEffect(() => {
+    if (product) {
+      setName(product.name);
+      setType(product.type);
+      setPrice(product.price);
+      setMinAllowedPrice(product.minPrice);
+      setDescription(product.description);
+      setAvailableStock(product.count);
+      setDiscountPercent(product.discountPercent);
+      setChecked(product.onSale);
+      setImages(product.images);
+      setModel(product.model);
+      setBrand(product.brand);
+    }
+  }, [product]);
+
   const closeOut = () => {
-    setName("");
-    setType("");
-    setModel("");
-    setBrand("");
-    setPrice("");
-    setMinAllowedPrice("");
-    setDescription("");
-    setAvailableStock("");
-    setDiscountPercent("");
-    setChecked(false);
-    setImages("");
-    setImagesNames([]);
+    if (!product) {
+      setName("");
+      setType("");
+      setModel("");
+      setBrand("");
+      setPrice("");
+      setMinAllowedPrice("");
+      setDescription("");
+      setAvailableStock("");
+      setDiscountPercent("");
+      setChecked(false);
+      setImages("");
+      setImagesNames([]);
+    }
     onClose();
   };
 
@@ -105,11 +127,33 @@ export default function AddProduct({ open, onClose }) {
       token
     )
       .then((response) => {
-        console.log(response.data);
+        enqueueSnackbar("Product Added Successfully", { variant: "success" });
         closeOut();
       })
       .catch((error) => console.log(error));
+  };
 
+  const editProduct = () => {
+    const newProduct = {
+      id: product.id,
+      name: name,
+      type: type,
+      model: model,
+      brand: brand,
+      price: price,
+      minPrice: minAllowedPrice,
+      description: description,
+      count: availableStock,
+      discountPercent: discountPercent,
+      isOnSale: checked,
+      imageUrls: product.imageUrls,
+    };
+    updateProduct(newProduct, token)
+      .then((response) => {
+        enqueueSnackbar("Product Updated Successfully", { variant: "success" });
+        closeOut();
+      })
+      .catch((error) => console.log(error));
   };
 
   return (
@@ -130,6 +174,7 @@ export default function AddProduct({ open, onClose }) {
                     id="name"
                     label="Name"
                     onChange={(event) => setName(event.target.value)}
+                    value={name}
                   />
                 </BorderlessTableCell>
                 <BorderlessTableCell>
@@ -159,6 +204,7 @@ export default function AddProduct({ open, onClose }) {
                     id="model"
                     label="Model"
                     onChange={(event) => setModel(event.target.value)}
+                    value={model}
                   />
                 </BorderlessTableCell>
                 <BorderlessTableCell>
@@ -166,6 +212,7 @@ export default function AddProduct({ open, onClose }) {
                     id="brand"
                     label="Brand"
                     onChange={(event) => setBrand(event.target.value)}
+                    value={brand}
                   />
                 </BorderlessTableCell>
               </TableRow>
@@ -175,6 +222,7 @@ export default function AddProduct({ open, onClose }) {
                     id="price"
                     label="Price"
                     onChange={(event) => setPrice(event.target.value)}
+                    value={price}
                   />
                 </BorderlessTableCell>
                 <BorderlessTableCell>
@@ -182,6 +230,7 @@ export default function AddProduct({ open, onClose }) {
                     id="min-allowed-price"
                     label="Minimal Allowed Price"
                     onChange={(event) => setMinAllowedPrice(event.target.value)}
+                    value={minAllowedPrice}
                   />
                 </BorderlessTableCell>
               </TableRow>
@@ -191,6 +240,7 @@ export default function AddProduct({ open, onClose }) {
                     id="discount-percent"
                     label="Discount Precent"
                     onChange={(event) => setDiscountPercent(event.target.value)}
+                    value={discountPercent}
                   />
                 </BorderlessTableCell>
                 <BorderlessTableCell>
@@ -198,6 +248,7 @@ export default function AddProduct({ open, onClose }) {
                     id="available-stock"
                     label="Available Stock"
                     onChange={(event) => setAvailableStock(event.target.value)}
+                    value={availableStock}
                   />
                 </BorderlessTableCell>
               </TableRow>
@@ -207,6 +258,7 @@ export default function AddProduct({ open, onClose }) {
                     id="description"
                     label="Description"
                     onChange={(event) => setDescription(event.target.value)}
+                    value={description}
                   />
                 </BorderlessTableCell>
               </TableRow>
@@ -215,28 +267,34 @@ export default function AddProduct({ open, onClose }) {
                   <FormControlLabel
                     control={<Checkbox onChange={handleChange} />}
                     label="On Sale"
+                    value={checked}
                   />
                 </BorderlessTableCell>
-                <BorderlessTableCell>
-                  <Button variant="contained" component="label">
-                    Upload File
-                    <input
-                      type="file"
-                      hidden
-                      multiple
-                      onChange={handleUploadClick}
-                    />
-                  </Button>
-                  {imagesNames.map((name) => (
-                    <div>{name}</div>
-                  ))}
-                </BorderlessTableCell>
+                {!product && (
+                  <BorderlessTableCell>
+                    <Button variant="contained" component="label">
+                      Upload File
+                      <input
+                        type="file"
+                        hidden
+                        multiple
+                        onChange={handleUploadClick}
+                      />
+                    </Button>
+                    {imagesNames.map((name) => (
+                      <div>{name}</div>
+                    ))}
+                  </BorderlessTableCell>
+                )}
               </TableRow>
             </TableBody>
           </Table>
           <div style={{ display: "grid", placeItems: "center" }}>
-            <Button variant="contained" onClick={addProduct}>
-              Add Product
+            <Button
+              variant="contained"
+              onClick={product ? editProduct : addProduct}
+            >
+              {product ? "Edit Product" : "Add Product"}
             </Button>
           </div>
         </Box>
