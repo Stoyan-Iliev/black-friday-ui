@@ -12,11 +12,11 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { styled } from "@mui/system";
 import { useDispatch } from "react-redux";
 import { addProduct } from "../../redux/features/CartSlice";
+import ProductImagePicker from "./ProductImagePicker";
 
 export default function ProductHeader({ product }) {
   const dispatch = useDispatch();
   const { name, price, count, imageUrls } = product;
-  console.log(product);
   const BorderlessTableCell = styled(TableCell)(() => ({
     borderBottom: "none",
   }));
@@ -39,11 +39,12 @@ export default function ProductHeader({ product }) {
 
   return (
     <div className="product-header-section">
-      <img
+      {/* <img
         className="main-image"
         src={imageUrls && imageUrls[0]}
         alt="product"
-      />
+      /> */}
+      <ProductImagePicker images={product.imageUrls} />
       <TableContainer>
         <Table>
           <TableBody>

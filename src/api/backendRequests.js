@@ -19,8 +19,6 @@ const backendFormDataRequest = axios.create({
 
 function buildFormDataWithUpload(product, images) {
   const formData = new FormData();
-  console.log(product);
-  console.log(JSON.stringify(product));
   formData.append(
     "product",
     new Blob([JSON.stringify(product)], {
@@ -44,7 +42,6 @@ export function signIn(credentials) {
 }
 
 export function signUp(user) {
-  console.log(user);
   return backendRequest.post("/auth/signup", user);
 }
 
@@ -87,7 +84,7 @@ export function makePurchase(products, token) {
     .create({
       baseURL: BASE_URL,
       headers: {
-        "content-type": "multipart/form-data",
+        "content-type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     })

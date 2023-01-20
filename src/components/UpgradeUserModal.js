@@ -41,7 +41,6 @@ const FullWidthTextField = styled(TextField)(() => ({
 
 export default function UpgradeUserModal({ open, onClose }) {
   const token = useSelector((state) => state.user.accessToken);
-  console.log(token);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState([]);
@@ -54,9 +53,6 @@ export default function UpgradeUserModal({ open, onClose }) {
   };
 
   const changeUserRoles = () => {
-    console.log(username);
-    console.log(email);
-    console.log(role);
     upgradeUser(
       {
         username: username,

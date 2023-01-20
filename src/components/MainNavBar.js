@@ -23,6 +23,10 @@ import UpgradeUserModal from "./UpgradeUserModal";
 import Cart from "./Cart";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import CreateCampaignModal from "./CreateCmpaignModal";
+import { useSelector, useDispatch } from 'react-redux'
+import { sliceSignOut } from '../redux/features/UserSlice';
+import { clearCart } from '../redux/features/CartSlice';
+
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -65,6 +69,16 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function MainNavBar() {
+  const user = useSelector((state) => state.user);
+  const products = useSelector((state) => state.cart.products)
+  console.log("USER: ", user)
+  const isSignedIn = user.isLoggedIn;
+  const isAdmin = user.roles && user.roles.includes("ROLE_ADMIN");
+  const isEmployee = user.roles &&  user.roles.includes("ROLE_EMPLOYEE") || isAdmin;
+  console.log("IS_ADMIN: ", isAdmin)
+  console.log("IS_EMPLOYEE: ", isEmployee )
+  const isClient = user.roles &&  user.roles.includes("ROLE_CLIENT");
+  const dispatch = useDispatch();
   const [isModalOpen, setModalOpen] = React.useState(false);
   const handleModalOpen = () => setModalOpen(true);
   const handleModalClose = () => setModalOpen(false);
@@ -104,12 +118,19 @@ export default function MainNavBar() {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  const signOutUser = () => {
+    console.log("SIGN OUT")
+    dispatch(clearCart())
+    dispatch(sliceSignOut());
+    handleMenuClose();
+  }
+
   const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
       anchorOrigin={{
-        vertical: "top",
+        vertical: "bottom",
         horizontal: "right",
       }}
       id={menuId}
@@ -123,6 +144,7 @@ export default function MainNavBar() {
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={signOutUser}>Sign Out</MenuItem>
     </Menu>
   );
 
@@ -186,7 +208,7 @@ export default function MainNavBar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="fixed">
         <Toolbar>
           <IconButton
             size="large"
@@ -213,7 +235,8 @@ export default function MainNavBar() {
           >
             Black Friday Store
           </Typography>
-          <Typography
+          <Box sx={{ flexGrow: 1 }} />
+          {!isSignedIn ? <><Typography
             variant="h6"
             noWrap
             component={Link}
@@ -246,71 +269,77 @@ export default function MainNavBar() {
             }}
           >
             Sign Up
-          </Typography>
-          <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <IconButton size="large" color="inherit" onClick={handleModalOpen}>
-              <AddBoxIcon />
-            </IconButton>
-            <AddProduct open={isModalOpen} onClose={handleModalClose} />
-            <IconButton
-              size="large"
-              color="inherit"
-              onClick={handleUpgradeModalOpen}
-            >
-              <UpgradeIcon />
-            </IconButton>
-            <UpgradeUserModal
-              open={isUpgradeModalOpen}
-              onClose={handleUpgradeModalClose}
-            />
-            <IconButton
-              size="large"
-              color="inherit"
-              onClick={handleCampaignModalOpen}
-            >
-              <CreateOutlinedIcon />
-            </IconButton>
-            <CreateCampaignModal
-              open={isCampaignModalOpen}
-              onClose={handleCampaignModalClose}
-            />
-            <IconButton
-              size="large"
-              color="inherit"
-              onClick={handleCartModalOpen}
-            >
-              <ShoppingCartIcon />
-            </IconButton>
-            {/* <Cart open={isCartModalOpen} onClose={handleCartModalClose} /> */}
-            <IconButton
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-          </Box>
-          <Box sx={{ display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </Box>
+          </Typography></> : null}
+          {isSignedIn ?
+            <><Box sx={{ display: { xs: "none", md: "flex" } }}>
+              {isEmployee ? <><IconButton size="large" color="inherit" onClick={handleModalOpen}>
+                <AddBoxIcon />
+              </IconButton>
+              <AddProduct open={isModalOpen} onClose={handleModalClose} />
+              <IconButton
+                size="large"
+                color="inherit"
+                onClick={handleUpgradeModalOpen}
+              >
+                <UpgradeIcon />
+              </IconButton>
+              {isAdmin ? <UpgradeUserModal
+                open={isUpgradeModalOpen}
+                onClose={handleUpgradeModalClose}
+              /> : null}
+              <IconButton
+                size="large"
+                color="inherit"
+                onClick={handleCampaignModalOpen}
+              >
+                <CreateOutlinedIcon />
+              </IconButton>
+              <CreateCampaignModal
+                open={isCampaignModalOpen}
+                onClose={handleCampaignModalClose}
+              /></> : null}
+              {isClient ? <IconButton
+                size="large"
+                color="inherit"
+                component={Link}
+                to="/cart"
+                // onClick={handleCartModalOpen}
+              >
+                <Badge badgeContent={products.length} color="error">
+                  <ShoppingCartIcon />
+                </Badge>
+              </IconButton> : null}
+              {/* <Cart open={isCartModalOpen} onClose={handleCartModalClose} /> */}
+              {isSignedIn ? <IconButton
+                size="large"
+                edge="end"
+                aria-label="account of current user"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+                color="inherit"
+              >
+                <AccountCircle />
+              </IconButton> : null}
+            </Box>
+            <Box sx={{ display: { xs: "flex", md: "none" } }}>
+              <IconButton
+                size="large"
+                aria-label="show more"
+                aria-controls={mobileMenuId}
+                aria-haspopup="true"
+                onClick={handleMobileMenuOpen}
+                color="inherit"
+              >
+                <MoreIcon />
+              </IconButton>
+            </Box></> 
+          : null}
         </Toolbar>
       </AppBar>
-      {renderMobileMenu}
-      {renderMenu}
+      <Toolbar />
+      {isSignedIn && renderMobileMenu}
+      {isSignedIn && renderMenu}
     </Box>
   );
 }

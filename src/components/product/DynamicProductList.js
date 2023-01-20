@@ -2,9 +2,7 @@ import { filter } from "../../utils/constants";
 import ProductList from "../ProductList";
 
 export default function DynamicProductList({ products }) {
-  console.log(products);
   let filteredProducts = filter(products);
-  console.log(filteredProducts);
   return (
     <>
       {filteredProducts &&
