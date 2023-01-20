@@ -125,7 +125,6 @@ export default function ProductHeader({ product, handleUpdateClose }) {
                     open={isModalOpen}
                     onClose={handleModalClose}
                   />
-                  {console.log("asdfasdfasdfasdf")}
                 </>
               ) : (
                 <Button

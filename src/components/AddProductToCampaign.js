@@ -39,7 +39,6 @@ export default function AddProductToCampaign({ open, onClose, product }) {
   const allCampaigns = () => {
     getAllCampaigns()
       .then((response) => {
-        console.log(response.data);
         setCampaigns(response.data);
       })
       .catch((error) => console.log(error));
@@ -47,7 +46,6 @@ export default function AddProductToCampaign({ open, onClose, product }) {
 
   useEffect(() => {
     allCampaigns();
-    console.log(campaigns);
   }, []);
 
   const closeOut = () => {

@@ -14,7 +14,6 @@ export default function Home() {
   const allProducts = () => {
     getAllProducts()
       .then((response) => {
-        console.log("U HOME: ", response.data);
         // for(let i = 0; i < 3; i++) {
         //   console.log("U loop: ", i)
         //   response.data["Computers"] = response.data["Computers"].concat(response.data["Computers"])

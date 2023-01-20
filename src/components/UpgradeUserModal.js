@@ -31,6 +31,19 @@ const style = {
   justifyItems: "center",
 };
 
+function getDefaultValidations() {
+  return {
+      username: {
+          error: false,
+          message: ""
+      },
+      email: {
+          error: false,
+          message: ""
+      },
+  }
+}
+
 const BorderlessTableCell = styled(TableCell)(() => ({
   borderBottom: "none",
 }));
@@ -44,6 +57,7 @@ export default function UpgradeUserModal({ open, onClose }) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState([]);
+  const [validations, setValidations] = useState(getDefaultValidations());
 
   const closeOut = () => {
     setUsername("");
@@ -52,20 +66,30 @@ export default function UpgradeUserModal({ open, onClose }) {
     onClose();
   };
 
+  const handleValidations = (validationResponse) => {
+    let validations = getDefaultValidations();
+    validationResponse.violations && validationResponse.violations.forEach(violaion => {
+        validations[violaion.fieldName].error = true;
+        validations[violaion.fieldName].message = violaion.message;
+    });
+    setValidations(validations);
+  }
+
   const changeUserRoles = () => {
     upgradeUser(
       {
         username: username,
         email: email,
-        roles: [role],
+        roles: role,
       },
       token
     )
       .then((response) => {
-        console.log(response.data);
         closeOut();
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        handleValidations(error.response.data);
+      });
   };
 
   return (
@@ -87,6 +111,8 @@ export default function UpgradeUserModal({ open, onClose }) {
                     id="username"
                     label="Username"
                     onChange={(event) => setUsername(event.target.value)}
+                    error={validations.username.error}
+                    helperText={validations.username.message}
                   />
                 </BorderlessTableCell>
                 <BorderlessTableCell>
@@ -94,6 +120,8 @@ export default function UpgradeUserModal({ open, onClose }) {
                     id="email"
                     label="Email"
                     onChange={(event) => setEmail(event.target.value)}
+                    error={validations.email.error}
+                    helperText={validations.email.message}
                   />
                 </BorderlessTableCell>
               </TableRow>

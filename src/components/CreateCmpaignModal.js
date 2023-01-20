@@ -3,7 +3,7 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
-import { TextField } from "@mui/material";
+import { TextField, Alert } from "@mui/material";
 import styled from "@emotion/styled";
 import { useSelector } from "react-redux";
 import { createCampaign } from "../api/backendRequests";
@@ -26,6 +26,23 @@ const style = {
   justifyItems: "center",
 };
 
+function getDefaultValidations() {
+  return {
+      name: {
+          error: false,
+          message: ""
+      },
+      campaignStart: {
+          error: false,
+          message: ""
+      },
+      campaignEnd: {
+          error: false,
+          message: ""
+      },
+  }
+}
+
 const FullWidthTextField = styled(TextField)(() => ({
   width: "100%",
 }));
@@ -36,7 +53,8 @@ export default function CreateCampaignModal({ open, onClose }) {
   const [name, setName] = useState("");
   const [campaignStart, setCampaignStart] = useState("");
   const [campaignEnd, setCampaignEnd] = useState("");
-
+  const [validations, setValidations] = useState(getDefaultValidations());
+  const [errorMessage, setErrorMessage] = useState("");
   const closeOut = () => {
     setName("");
     setCampaignStart("");
@@ -54,11 +72,22 @@ export default function CreateCampaignModal({ open, onClose }) {
       token
     )
       .then((response) => {
-        console.log(response.data);
         closeOut();
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        handleValidations(error.response.data);
+      });
   };
+
+  const handleValidations = (validationResponse) => {
+    validationResponse.message ? setErrorMessage(validationResponse.message) : setErrorMessage("");
+    let validations = getDefaultValidations();
+    validationResponse.violations && validationResponse.violations.forEach(violaion => {
+        validations[violaion.fieldName].error = true;
+        validations[violaion.fieldName].message = violaion.message;
+    });
+    setValidations(validations);
+  }
 
   return (
     <div>
@@ -70,11 +99,13 @@ export default function CreateCampaignModal({ open, onClose }) {
             label="Campaign Name"
             sx={{ marginBottom: "16px" }}
             onChange={(event) => setName(event.target.value)}
+            error={validations.name.error}
+            helperText={validations.name.message}
           />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Stack spacing={2}>
               <DateTimePicker
-                label="Start Campaign Time"
+                label={!validations.campaignStart.error ? "Start Campaign Time" : validations.campaignStart.message}
                 renderInput={(params) => <TextField {...params} />}
                 value={campaignStart}
                 onChange={(newValue) => {
@@ -82,13 +113,15 @@ export default function CreateCampaignModal({ open, onClose }) {
                 }}
               />
               <DateTimePicker
-                label="End Campaign Time"
+                label={!validations.campaignEnd.error ? "End Campaign Time" : validations.campaignEnd.message}
                 renderInput={(params) => <TextField {...params} />}
                 value={campaignEnd}
                 onChange={(newValue) => {
                   setCampaignEnd(newValue);
                 }}
               />
+              {console.log(errorMessage)}
+            {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
             </Stack>
           </LocalizationProvider>
           <div

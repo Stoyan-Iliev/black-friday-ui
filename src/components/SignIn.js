@@ -13,21 +13,51 @@ import { useNavigate } from "react-router-dom";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { Avatar, Hidden, Typography, Container } from "@mui/material";
 
+function getDefaultValidations() {
+  return {
+      username: {
+          error: false,
+          message: ""
+      },
+      password: {
+          error: false,
+          message: ""
+      },
+  }
+}
+
 export default function SignIn() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [validations, setValidations] = useState(getDefaultValidations());
 
   const signInUser = () => {
     signIn({ username: username, password: password })
       .then((response) => {
-        console.log(response.data);
         dispatch(sliceSignIn(response.data));
         navigate("/", { replace: true });
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        handleValidations(error.response.data);
+      });
   };
+
+  const handleValidations = (validationResponse) => {
+    let validations = getDefaultValidations();
+    validationResponse.violations && validationResponse.violations.forEach(violaion => {
+        validations[violaion.fieldName].error = true;
+        validations[violaion.fieldName].message = violaion.message;
+    });
+    if (validationResponse.message && validationResponse.message === "Bad credentials") {
+        validations.username.error = true;
+        validations.username.message = "Invalid credentials";
+        validations.password.error = true;
+        validations.password.message = "Invalid credentials";
+    }
+    setValidations(validations);
+  }
 
   return (
     <Container  sx={{mt: 4}}>
@@ -53,6 +83,8 @@ export default function SignIn() {
           label="Username"
           sx={{mt: 2}}
           onChange={(event) => setUsername(event.target.value)}
+          error={validations.username.error}
+          helperText={validations.username.message}
         />
         <TextField
           id="password"
@@ -61,6 +93,8 @@ export default function SignIn() {
           autoComplete="current-password"
           sx={{mt: 2}}
           onChange={(event) => setPassword(event.target.value)}
+          error={validations.password.error}
+          helperText={validations.password.message}
         />
         <Button variant="contained" onClick={signInUser} sx={{mt: 2}}>
           Sign In

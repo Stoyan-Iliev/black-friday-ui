@@ -10,7 +10,6 @@ export default function CampaignChoice() {
   const allProducts = () => {
     getAllProducts()
       .then((response) => {
-        console.log(response.data);
         setProducts(response.data);
       })
       .catch((error) => console.log(error));
@@ -21,7 +20,6 @@ export default function CampaignChoice() {
   const allCampaigns = () => {
     getAllCampaigns()
       .then((response) => {
-        console.log(response.data);
         setCampaigns(response.data);
       })
       .catch((error) => console.log(error));

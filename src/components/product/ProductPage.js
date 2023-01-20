@@ -15,11 +15,9 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 export default function ProductPage() {
   let { id } = useParams();
   const [product, setProduct] = useState({ imageUrls: [] });
-  console.log("PRODUCT: ", product);
   const getProduct = () => {
     getProductById(id)
       .then((response) => {
-        console.log(response.data);
         setProduct(response.data);
       })
       .catch((error) => console.log(error));
@@ -96,11 +94,11 @@ export default function ProductPage() {
   return (
     <Container>
       <Grid container>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={6}>
           <ProductImagePicker images={product.imageUrls} />
         </Grid>
-        <Grid item xs={6}>
-          <Stack spacing={2} sx={{ alignItems: "flex-start" }}>
+        <Grid item xs={12} sm={6} >
+          <Stack spacing={2} sx={{ alignItems: "flex-start", mt: 10, ml: 3 }}>
             <Typography gutterBottom variant="h4">
               {product.name}
             </Typography>
@@ -111,7 +109,7 @@ export default function ProductPage() {
               Model: {product.model}
             </Typography>
             {renderStocksLabel()}
-            <Box display={"flex"}>
+            <Box display={"flex"} alignSelf="stretch" justifyContent={"space-between"}>
               <Typography variant="h6">
                 Price: <b style={{ color: "green" }}>{product.price} lv</b>
               </Typography>
@@ -133,7 +131,6 @@ export default function ProductPage() {
                 </>
               ) : (
                 <Button
-                  fullWidth
                   size="large"
                   variant="contained"
                   startIcon={<ShoppingCartIcon />}

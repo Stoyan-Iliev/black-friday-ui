@@ -49,6 +49,15 @@ const style = {
     // p: 4,
     // justifyItems: "center",
   };
+
+  function getDefaultValidations() {
+    return {
+        address: {
+            error: false,
+            message: ""
+        }
+    }
+  }
   
   const FullWidthTextField = styled(TextField)(() => ({
     width: "100%",
@@ -65,6 +74,7 @@ export default function CartPage() {
   
     const [address, setAddress] = useState("");
     const [snackBarOpen, setSnackBarOpen] = useState(false);
+    const [validations, setValidations] = useState(getDefaultValidations());
   
     const closeOut = () => {
       setAddress("");
@@ -75,6 +85,15 @@ export default function CartPage() {
     const BorderlessTableCell = styled(TableCell)(() => ({
       borderBottom: "none",
     }));
+
+    const handleValidations = (validationResponse) => {
+        let validations = getDefaultValidations();
+        validationResponse.violations && validationResponse.violations.forEach(violaion => {
+            validations[violaion.fieldName].error = true;
+            validations[violaion.fieldName].message = violaion.message;
+        });
+        setValidations(validations);
+      }    
   
     const finishPurchase = () => {
       const productIDs = cart.products.map((product) => {
@@ -91,15 +110,13 @@ export default function CartPage() {
             enqueueSnackbar('Purchase Successful', { variant: "success" });
             closeOut();
             navigate("/")
-            console.log(response.data);
         }).catch((error) => {
-            console.log(error)
+            handleValidations(error.response.data);
         });
   
     };
 
     const setProductCount = (id, count) => {
-        console.log("Set Count: ", id, ", count: ", count)
         dispatch(changeProductCount({id: id, newCount: count}));
         enqueueSnackbar('Product quantity changed', { variant: "success" });
     }
@@ -134,13 +151,13 @@ export default function CartPage() {
                 label="Dellivery Address"
                 onChange={(event) => setAddress(event.target.value)}
                 required
+                helperText={validations.address.message}
                 /> :
                 <Alert severity="info">Cart is currently empty</Alert>
             }
                 
                 {/* </Paper> */}
                 {cart.products.map((product) => {
-                    console.log(product);
                     return (
                     <Paper elevation={3}>
                         <Grid container sx={{padding: "20px"}} spacing={2}>

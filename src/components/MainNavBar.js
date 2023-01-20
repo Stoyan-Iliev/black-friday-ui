@@ -17,7 +17,7 @@ import MoreIcon from "@mui/icons-material/MoreVert";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 import AddProduct from "./AddProduct";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import UpgradeIcon from "@mui/icons-material/Upgrade";
 import UpgradeUserModal from "./UpgradeUserModal";
 import Cart from "./Cart";
@@ -33,60 +33,18 @@ import MaterialUISwitch from "./MaterialUISwitch";
 import { productTypes } from "../utils/constants";
 
 
-
-const Search = styled("div")(({ theme }) => ({
-  position: "relative",
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  "&:hover": {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: "100%",
-  [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(3),
-    width: "auto",
-  },
-}));
-
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    [theme.breakpoints.up("md")]: {
-      width: "20ch",
-    },
-  },
-}));
-
 export default function MainNavBar(props) {
   const user = useSelector((state) => state.user);
   const products = useSelector((state) => state.cart.products)
-  console.log("USER: ", user)
+  const navigate = useNavigate();
   const isSignedIn = user.isLoggedIn;
-  const isAdmin = user.roles && user.roles.includes("ROLE_ADMIN");
-  const isEmployee = user.roles &&  user.roles.includes("ROLE_EMPLOYEE") || isAdmin;
-  const isClient = user.roles &&  user.roles.includes("ROLE_CLIENT");
+  const isAdmin = isSignedIn && user.roles.includes("ROLE_ADMIN");
+  const isEmployee = isSignedIn &&  user.roles.includes("ROLE_EMPLOYEE") || isAdmin;
+  const isClient = isSignedIn &&  user.roles.includes("ROLE_CLIENT");
 
   const [themeSwitchChecked, setThemeSwitchChecked] = React.useState(true);
 
   const handleThemeSwitchChange = (event) => {
-    console.log("CHANGE IT")
     setThemeSwitchChecked(event.target.checked);
   };
 
@@ -154,10 +112,10 @@ export default function MainNavBar(props) {
   };
 
   const signOutUser = () => {
-    console.log("SIGN OUT")
     dispatch(clearCart())
     dispatch(sliceSignOut());
     handleMenuClose();
+    navigate("/");
   }
 
   const menuId = "primary-search-account-menu";
@@ -383,7 +341,6 @@ export default function MainNavBar(props) {
                     }}
                   >
                     <Typography sx={{mb: 1}}>Change Theme</Typography>
-                    {console.log("SWITCH: ", themeSwitchChecked)}
                     <MaterialUISwitch 
                       handleSwitch={() => props.changeTheme() }
                     />
