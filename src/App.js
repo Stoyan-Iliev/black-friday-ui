@@ -1,22 +1,19 @@
 import "./App.css";
 import MainNavBar from "./components/MainNavBar";
 import * as React from "react";
-import ProductList from "./components/ProductList";
 import { Routes, Route } from "react-router-dom";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
-import AddProduct from "./components/AddProduct";
 import ProductPage from "./components/product/ProductPage";
 import Home from "./components/Home";
-import CampaignChoice from "./components/CampaingChoice";
-import Cart from "./components/Cart";
 import CartPage from "./components/CartPage";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { useEffect, useState, useMemo } from "react";
-import { SnackbarProvider, useSnackbar } from 'notistack';
+import { useEffect, useState } from "react";
+import { SnackbarProvider } from 'notistack';
 import CategoryBrowse from "./components/CategoryBrowse";
 import EmailVerifiedPage from "./components/EmailVerifiedPage";
+import AccountPage from "./components/AccountPage";
 
 
   const darkTheme = createTheme({
@@ -52,7 +49,6 @@ function App() {
     <div className="App">
       <MainNavBar changeTheme={() => toggleColorMode()}/>
       {
-        // isLoggedIn ? (
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/verified" element={<EmailVerifiedPage />} />
@@ -60,19 +56,10 @@ function App() {
           <Route path="/products/:id" element={<ProductPage />} />
           <Route path="/signIn/" element={<SignIn />} />
           <Route path="/signUp/" element={<SignUp />} />
-          <Route path="/campaignChoice/" element={<CampaignChoice />} />
           <Route path="/cart/" element={<CartPage />} />
+          <Route path="/myAccount" element={<AccountPage />} />
           <Route path="*" element={<Home />} />
         </Routes>
-        // ) : (
-        //   <Routes>
-        //     <Route path="home" element={<Home />} />
-        //     <Route path="signIn" element={<SignIn />} />
-        //     <Route path="signUp" element={<SignUp />} />
-        //     <Route path="offers" element={<Offers />} />
-        //     <Route path="*" element={<SignIn />} />
-        //   </Routes>
-        // )
       }
     </div>
     </SnackbarProvider>
