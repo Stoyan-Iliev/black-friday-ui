@@ -120,6 +120,11 @@ export default function MainNavBar(props) {
     navigate("/");
   };
 
+  const handleMyAccountClick = () => {
+    handleMenuClose();
+    navigate("/myAccount");
+  }
+
   const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
@@ -137,8 +142,8 @@ export default function MainNavBar(props) {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      {/* <MenuItem onClick={handleMenuClose}>Profile</MenuItem> */}
+      <MenuItem onClick={handleMyAccountClick}>My account</MenuItem>
       <MenuItem onClick={signOutUser}>Sign Out</MenuItem>
     </Menu>
   );
