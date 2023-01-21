@@ -28,19 +28,19 @@ const style = {
 
 function getDefaultValidations() {
   return {
-      name: {
-          error: false,
-          message: ""
-      },
-      campaignStart: {
-          error: false,
-          message: ""
-      },
-      campaignEnd: {
-          error: false,
-          message: ""
-      },
-  }
+    name: {
+      error: false,
+      message: "",
+    },
+    campaignStart: {
+      error: false,
+      message: "",
+    },
+    campaignEnd: {
+      error: false,
+      message: "",
+    },
+  };
 }
 
 const FullWidthTextField = styled(TextField)(() => ({
@@ -63,6 +63,7 @@ export default function CreateCampaignModal({ open, onClose }) {
   };
 
   const addCampaign = () => {
+    console.log(campaignStart);
     createCampaign(
       {
         name: name,
@@ -80,14 +81,17 @@ export default function CreateCampaignModal({ open, onClose }) {
   };
 
   const handleValidations = (validationResponse) => {
-    validationResponse.message ? setErrorMessage(validationResponse.message) : setErrorMessage("");
+    validationResponse.message
+      ? setErrorMessage(validationResponse.message)
+      : setErrorMessage("");
     let validations = getDefaultValidations();
-    validationResponse.violations && validationResponse.violations.forEach(violaion => {
+    validationResponse.violations &&
+      validationResponse.violations.forEach((violaion) => {
         validations[violaion.fieldName].error = true;
         validations[violaion.fieldName].message = violaion.message;
-    });
+      });
     setValidations(validations);
-  }
+  };
 
   return (
     <div>
@@ -105,7 +109,11 @@ export default function CreateCampaignModal({ open, onClose }) {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Stack spacing={2}>
               <DateTimePicker
-                label={!validations.campaignStart.error ? "Start Campaign Time" : validations.campaignStart.message}
+                label={
+                  !validations.campaignStart.error
+                    ? "Start Campaign Time"
+                    : validations.campaignStart.message
+                }
                 renderInput={(params) => <TextField {...params} />}
                 value={campaignStart}
                 onChange={(newValue) => {
@@ -113,7 +121,11 @@ export default function CreateCampaignModal({ open, onClose }) {
                 }}
               />
               <DateTimePicker
-                label={!validations.campaignEnd.error ? "End Campaign Time" : validations.campaignEnd.message}
+                label={
+                  !validations.campaignEnd.error
+                    ? "End Campaign Time"
+                    : validations.campaignEnd.message
+                }
                 renderInput={(params) => <TextField {...params} />}
                 value={campaignEnd}
                 onChange={(newValue) => {
@@ -121,7 +133,9 @@ export default function CreateCampaignModal({ open, onClose }) {
                 }}
               />
               {console.log(errorMessage)}
-            {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
+              {errorMessage ? (
+                <Alert severity="error">{errorMessage}</Alert>
+              ) : null}
             </Stack>
           </LocalizationProvider>
           <div

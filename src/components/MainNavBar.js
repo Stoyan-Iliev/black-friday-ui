@@ -23,24 +23,26 @@ import UpgradeUserModal from "./UpgradeUserModal";
 import Cart from "./Cart";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import CreateCampaignModal from "./CreateCmpaignModal";
-import { useSelector, useDispatch } from 'react-redux'
-import { sliceSignOut } from '../redux/features/UserSlice';
-import { clearCart } from '../redux/features/CartSlice';
-import SettingsIcon from '@mui/icons-material/Settings';
-import Tooltip from '@mui/material/Tooltip';
-import Popover from '@mui/material/Popover';
+import { useSelector, useDispatch } from "react-redux";
+import { sliceSignOut } from "../redux/features/UserSlice";
+import { clearCart } from "../redux/features/CartSlice";
+import SettingsIcon from "@mui/icons-material/Settings";
+import Tooltip from "@mui/material/Tooltip";
+import Popover from "@mui/material/Popover";
 import MaterialUISwitch from "./MaterialUISwitch";
 import { productTypes } from "../utils/constants";
-
+import IncomeModal from "./IncomeModal";
+import RequestQuoteIcon from "@mui/icons-material/RequestQuote";
 
 export default function MainNavBar(props) {
   const user = useSelector((state) => state.user);
-  const products = useSelector((state) => state.cart.products)
+  const products = useSelector((state) => state.cart.products);
   const navigate = useNavigate();
   const isSignedIn = user.isLoggedIn;
   const isAdmin = isSignedIn && user.roles.includes("ROLE_ADMIN");
-  const isEmployee = isSignedIn &&  user.roles.includes("ROLE_EMPLOYEE") || isAdmin;
-  const isClient = isSignedIn &&  user.roles.includes("ROLE_CLIENT");
+  const isEmployee =
+    (isSignedIn && user.roles.includes("ROLE_EMPLOYEE")) || isAdmin;
+  const isClient = isSignedIn && user.roles.includes("ROLE_CLIENT");
 
   const [themeSwitchChecked, setThemeSwitchChecked] = React.useState(true);
 
@@ -61,9 +63,9 @@ export default function MainNavBar(props) {
   const handleCampaignModalOpen = () => setCampaignModalOpen(true);
   const handleCampaignModalClose = () => setCampaignModalOpen(false);
 
-  const [isCartModalOpen, setCartModalOpen] = React.useState(false);
-  const handleCartModalOpen = () => setCartModalOpen(true);
-  const handleCartModalClose = () => setCartModalOpen(false);
+  const [isIncomeModalOpen, setIncomeModalOpen] = React.useState(false);
+  const handleIncomeModalOpen = () => setIncomeModalOpen(true);
+  const handleIncomeModalClose = () => setIncomeModalOpen(false);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   // const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -112,11 +114,11 @@ export default function MainNavBar(props) {
   // };
 
   const signOutUser = () => {
-    dispatch(clearCart())
+    dispatch(clearCart());
     dispatch(sliceSignOut());
     handleMenuClose();
     navigate("/");
-  }
+  };
 
   const menuId = "primary-search-account-menu";
   const renderMenu = (
@@ -230,52 +232,64 @@ export default function MainNavBar(props) {
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
 
-          {!isSignedIn ? <><Typography
-              variant="h6"
-              noWrap
-              component={Link}
-              to="/signIn"
-              sx={{
-                display: {
-                  xs: "none",
-                  sm: "block",
-                  textDecoration: "none",
-                  color: "inherit",
-                  marginLeft: "10px",
-                },
-              }}
-            >
-              Sign In
-            </Typography>
-            <Typography
-              variant="h6"
-              noWrap
-              component={Link}
-              to="/signUp"
-              sx={{
-                display: {
-                  xs: "none",
-                  sm: "block",
-                  textDecoration: "none",
-                  color: "inherit",
-                  marginLeft: "10px",
-                },
-              }}
-            >
-              Sign Up
-            </Typography></> 
-          : null}
+          {!isSignedIn ? (
+            <>
+              <Typography
+                variant="h6"
+                noWrap
+                component={Link}
+                to="/signIn"
+                sx={{
+                  display: {
+                    xs: "none",
+                    sm: "block",
+                    textDecoration: "none",
+                    color: "inherit",
+                    marginLeft: "10px",
+                  },
+                }}
+              >
+                Sign In
+              </Typography>
+              <Typography
+                variant="h6"
+                noWrap
+                component={Link}
+                to="/signUp"
+                sx={{
+                  display: {
+                    xs: "none",
+                    sm: "block",
+                    textDecoration: "none",
+                    color: "inherit",
+                    marginLeft: "10px",
+                  },
+                }}
+              >
+                Sign Up
+              </Typography>
+            </>
+          ) : null}
 
           {/* {isSignedIn ? */}
-            {/* <Box sx={{ display: { xs: "none", md: "flex" } }}> */}
-            <Box sx={{ display: "flex" }}>
-              {isEmployee ? <><IconButton size="large" color="inherit" onClick={handleModalOpen}>
+          {/* <Box sx={{ display: { xs: "none", md: "flex" } }}> */}
+          <Box sx={{ display: "flex" }}>
+            {isEmployee ? (
+              <>
+                <IconButton
+                  size="large"
+                  color="inherit"
+                  onClick={handleModalOpen}
+                >
                   <AddBoxIcon />
                 </IconButton>
-                <AddProduct open={isModalOpen} onClose={handleModalClose} /></>
-              : null}
+                <AddProduct open={isModalOpen} onClose={handleModalClose} />
+              </>
+            ) : null}
 
-              {isAdmin ? <><IconButton
+            {isAdmin ? (
+              <>
+                <IconButton
                   size="large"
                   color="inherit"
                   onClick={handleUpgradeModalOpen}
@@ -285,10 +299,13 @@ export default function MainNavBar(props) {
                 <UpgradeUserModal
                   open={isUpgradeModalOpen}
                   onClose={handleUpgradeModalClose}
-                /></> 
-              : null}
+                />
+              </>
+            ) : null}
 
-              {isEmployee ? <><IconButton
+            {isEmployee ? (
+              <>
+                <IconButton
                   size="large"
                   color="inherit"
                   onClick={handleCampaignModalOpen}
@@ -298,73 +315,90 @@ export default function MainNavBar(props) {
                 <CreateCampaignModal
                   open={isCampaignModalOpen}
                   onClose={handleCampaignModalClose}
-                /></> 
-              : null}
+                />
+                <IconButton
+                  size="large"
+                  color="inherit"
+                  onClick={handleIncomeModalOpen}
+                >
+                  <RequestQuoteIcon />
+                </IconButton>
+                <IncomeModal
+                  open={isIncomeModalOpen}
+                  onClose={handleIncomeModalClose}
+                />
+              </>
+            ) : null}
 
-              {isClient ? <><IconButton
+            {isClient ? (
+              <>
+                <IconButton
                   size="large"
                   color="inherit"
                   component={Link}
                   to="/cart"
-                  // onClick={handleCartModalOpen}
                 >
                   <Badge badgeContent={products.length} color="error">
                     <ShoppingCartIcon />
                   </Badge>
-                </IconButton></> 
-              : null}
-
-              {/* {isSignedIn ?  */}
-              <><IconButton size="large" onClick={handleSettingsMenuOpen} color="inherit">
-                  <SettingsIcon/>
                 </IconButton>
-                <Popover
-                  id="menu-appbar"
-                  open={isSettingsMenuOpen}
-                  anchorEl={anchorElSettings}
-                  onClose={handleSettingsMenuClose}
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'right',
-                  }}
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                >
-                  <Box
-                    sx={{
+              </>
+            ) : null}
+
+            {/* {isSignedIn ?  */}
+            <>
+              <IconButton
+                size="large"
+                onClick={handleSettingsMenuOpen}
+                color="inherit"
+              >
+                <SettingsIcon />
+              </IconButton>
+              <Popover
+                id="menu-appbar"
+                open={isSettingsMenuOpen}
+                anchorEl={anchorElSettings}
+                onClose={handleSettingsMenuClose}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+              >
+                <Box
+                  sx={{
                     marginY: 3,
                     marginX: 1,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    }}
-                  >
-                    <Typography sx={{mb: 1}}>Change Theme</Typography>
-                    <MaterialUISwitch 
-                      handleSwitch={() => props.changeTheme() }
-                    />
-                  </Box>
-                </Popover></> 
-              {/* // : null} */}
-              {/* <Cart open={isCartModalOpen} onClose={handleCartModalClose} /> */}
-
-              {isSignedIn ? <IconButton
-                  size="large"
-                  edge="end"
-                  aria-label="account of current user"
-                  aria-controls={menuId}
-                  aria-haspopup="true"
-                  onClick={handleProfileMenuOpen}
-                  color="inherit"
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
                 >
-                  <AccountCircle />
-                </IconButton> 
-              : null}
-             </Box>
+                  <Typography sx={{ mb: 1 }}>Change Theme</Typography>
+                  <MaterialUISwitch handleSwitch={() => props.changeTheme()} />
+                </Box>
+              </Popover>
+            </>
 
-            {/* <Box sx={{ display: { xs: "flex", md: "none" } }}>
+            {isSignedIn ? (
+              <IconButton
+                size="large"
+                edge="end"
+                aria-label="account of current user"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+                color="inherit"
+              >
+                <AccountCircle />
+              </IconButton>
+            ) : null}
+          </Box>
+
+          {/* <Box sx={{ display: { xs: "flex", md: "none" } }}>
               <IconButton
                 size="large"
                 aria-label="show more"

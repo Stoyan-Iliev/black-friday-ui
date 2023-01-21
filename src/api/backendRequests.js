@@ -102,6 +102,18 @@ export function makePurchase(products, token) {
     .post("/purchase", products);
 }
 
+export function getIncome(startDate, endDate, token) {
+  return axios
+    .create({
+      baseURL: BASE_URL,
+      headers: {
+        "content-type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .get(`/purchase/income?startDate=${startDate}&endDate=${endDate}`);
+}
+
 export function addProductToCampaign(product, campaignName, token) {
   return axios
     .create({

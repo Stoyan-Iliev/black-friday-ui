@@ -33,15 +33,15 @@ const style = {
 
 function getDefaultValidations() {
   return {
-      username: {
-          error: false,
-          message: ""
-      },
-      email: {
-          error: false,
-          message: ""
-      },
-  }
+    username: {
+      error: false,
+      message: "",
+    },
+    email: {
+      error: false,
+      message: "",
+    },
+  };
 }
 
 const BorderlessTableCell = styled(TableCell)(() => ({
@@ -62,18 +62,19 @@ export default function UpgradeUserModal({ open, onClose }) {
   const closeOut = () => {
     setUsername("");
     setEmail("");
-    setRole("");
+    setRole([]);
     onClose();
   };
 
   const handleValidations = (validationResponse) => {
     let validations = getDefaultValidations();
-    validationResponse.violations && validationResponse.violations.forEach(violaion => {
+    validationResponse.violations &&
+      validationResponse.violations.forEach((violaion) => {
         validations[violaion.fieldName].error = true;
         validations[violaion.fieldName].message = violaion.message;
-    });
+      });
     setValidations(validations);
-  }
+  };
 
   const changeUserRoles = () => {
     upgradeUser(
