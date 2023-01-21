@@ -2,16 +2,9 @@ import MainNavBar from "./MainNavBar";
 
 import { getProductsByCategory } from "../api/backendRequests";
 import { useEffect, useState } from "react";
-import { filter } from "../utils/constants";
-import ProductList from "./ProductList";
 import Container from "@mui/material/Container";
-import { productTypes } from "../utils/constants";
 import {
-  Avatar,
   Box,
-  Button,
-  CardActionArea,
-  CardActions,
   Grid,
   Typography,
   TextField,

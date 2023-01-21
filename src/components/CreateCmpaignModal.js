@@ -63,7 +63,6 @@ export default function CreateCampaignModal({ open, onClose }) {
   };
 
   const addCampaign = () => {
-    console.log(campaignStart);
     createCampaign(
       {
         name: name,

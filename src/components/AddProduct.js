@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react";
 import * as React from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Modal from "@mui/material/Modal";
 import {
   Checkbox,
   FormControlLabel,
@@ -15,7 +12,10 @@ import {
   FormControl,
   InputLabel,
   Select,
-  FormHelperText
+  FormHelperText,
+  Box,
+  Button,
+  Modal,
 } from "@mui/material";
 import styled from "@emotion/styled";
 import { useSelector } from "react-redux";
@@ -38,31 +38,31 @@ const style = {
 
 function getDefaultValidations() {
   return {
-      name: {
-          error: false,
-          message: ""
-      },
-      type: {
-          error: false,
-          message: ""
-      },
-      price: {
-          error: false,
-          message: ""
-      },
-      minPrice: {
-          error: false,
-          message: ""
-      },
-      Model: {
-          error: false,
-          message: ""
-      },
-      Brand: {
-          error: false,
-          message: ""
-      }
-  }
+    name: {
+      error: false,
+      message: "",
+    },
+    type: {
+      error: false,
+      message: "",
+    },
+    price: {
+      error: false,
+      message: "",
+    },
+    minPrice: {
+      error: false,
+      message: "",
+    },
+    Model: {
+      error: false,
+      message: "",
+    },
+    Brand: {
+      error: false,
+      message: "",
+    },
+  };
 }
 
 const BorderlessTableCell = styled(TableCell)(() => ({
@@ -142,12 +142,13 @@ export default function AddProduct({ open, onClose, product }) {
 
   const handleValidations = (validationResponse) => {
     let validations = getDefaultValidations();
-    validationResponse.violations && validationResponse.violations.forEach(violaion => {
+    validationResponse.violations &&
+      validationResponse.violations.forEach((violaion) => {
         validations[violaion.fieldName].error = true;
         validations[violaion.fieldName].message = violaion.message;
-    });
+      });
     setValidations(validations);
-  }
+  };
 
   const addProduct = () => {
     createProduct(
@@ -171,7 +172,7 @@ export default function AddProduct({ open, onClose, product }) {
         closeOut();
       })
       .catch((error) => {
-        console.log(error.response.data)
+        console.log(error.response.data);
         handleValidations(error.response.data);
       });
   };
@@ -223,7 +224,7 @@ export default function AddProduct({ open, onClose, product }) {
                   />
                 </BorderlessTableCell>
                 <BorderlessTableCell>
-                  <FormControl fullWidth error={validations.type.error} >
+                  <FormControl fullWidth error={validations.type.error}>
                     <InputLabel>Type</InputLabel>
                     <Select
                       id="type"

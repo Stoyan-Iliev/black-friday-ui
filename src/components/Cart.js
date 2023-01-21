@@ -1,8 +1,5 @@
 import { useState } from "react";
 import * as React from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Modal from "@mui/material/Modal";
 import {
   Card,
   CardActionArea,
@@ -11,6 +8,9 @@ import {
   TableCell,
   TextField,
   Typography,
+  Box,
+  Button,
+  Modal,
 } from "@mui/material";
 import styled from "@emotion/styled";
 import { useSelector } from "react-redux";
@@ -61,8 +61,7 @@ export default function AddProduct({ open, onClose }) {
       },
       user.accessToken
     )
-      .then((response) => {
-      })
+      .then((response) => {})
       .catch((error) => console.log(error));
 
     closeOut();

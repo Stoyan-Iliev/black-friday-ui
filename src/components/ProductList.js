@@ -44,7 +44,6 @@ export default function ProductList({ products, type, handleUpdateClose }) {
     setActiveStep(step);
   };
 
-  // const maxSteps = images.length;
   const [productLength, setProductLength] = useState(5);
   const isEmpty = !products || products.length === 0;
   const [activeStep, setActiveStep] = useState(0);
@@ -76,15 +75,6 @@ export default function ProductList({ products, type, handleUpdateClose }) {
     window.addEventListener("resize", handleResize);
   });
 
-  const responsive = {
-    0: { items: 2 },
-    100: { items: 2 },
-    568: { items: 2 },
-    1024: { items: 5 },
-  };
-
-  // const carousel = useRef<AliceCarousel>(null);
-
   return (
     <div>
       {!isEmpty ? (
@@ -113,11 +103,6 @@ export default function ProductList({ products, type, handleUpdateClose }) {
               </IconButton>
             </Grid>
             <Grid item xs={10}>
-              {/* <AliceCarousel 
-            items={getItems()}
-            responsive={responsive}
-          /> */}
-
               <SwipeableViews
                 axis={"x"}
                 index={activeStep}
@@ -126,7 +111,6 @@ export default function ProductList({ products, type, handleUpdateClose }) {
               >
                 {sliceIntoChunks(products, productLength).map(
                   (slicedProducts, upperIndex) => (
-                    // <div>
                     <>
                       <Grid
                         container
@@ -151,11 +135,8 @@ export default function ProductList({ products, type, handleUpdateClose }) {
                         })}
                       </Grid>
                     </>
-                    // </div>
                   )
                 )}
-                {/* <Grid item xs={12} sm={6} md={3} lg={2.4} xl={2.4}> */}
-                {/* </Grid> */}
               </SwipeableViews>
             </Grid>
             <Grid item xs={1}>

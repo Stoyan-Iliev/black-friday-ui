@@ -2,20 +2,14 @@ import { useState } from "react";
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Modal from "@mui/material/Modal";
 import {
   Alert,
   Card,
-  CardActionArea,
-  CardContent,
   CardMedia,
   Container,
-  IconButton,
-  InputAdornment,
   InputLabel,
   MenuItem,
   Select,
-  TableCell,
   TextField,
   Typography,
 } from "@mui/material";
@@ -26,31 +20,13 @@ import { Grid } from "@mui/material";
 import { Stack } from "@mui/system";
 import Paper from "@mui/material/Paper";
 import DeleteIcon from "@mui/icons-material/Delete";
-import HomeIcon from "@mui/icons-material/Home";
 import { useNavigate, Link } from "react-router-dom";
 import {
   changeProductCount,
   removeProduct,
   clearCart,
 } from "../redux/features/CartSlice";
-import { blue, blueGrey } from "@mui/material/colors";
-import { useTheme } from "@mui/material/styles";
-import CustomSnackBar from "./CustomSnackBar";
-//   const { enqueueSnackbar } = useSnackbar();
 import { useSnackbar } from "notistack";
-
-const style = {
-  // position: "absolute",
-  // top: "50%",
-  // left: "50%",
-  // transform: "translate(-50%, -50%)",
-  // width: "70%",
-  // bgcolor: "background.paper",
-  // border: "none",
-  // boxShadow: 24,
-  // p: 4,
-  // justifyItems: "center",
-};
 
 function getDefaultValidations() {
   return {
@@ -66,7 +42,6 @@ const FullWidthTextField = styled(TextField)(() => ({
 }));
 
 export default function CartPage() {
-  const theme = useTheme();
   const { enqueueSnackbar } = useSnackbar();
 
   const dispatch = useDispatch();
@@ -75,18 +50,11 @@ export default function CartPage() {
   const cart = useSelector((state) => state.cart);
 
   const [address, setAddress] = useState("");
-  const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [validations, setValidations] = useState(getDefaultValidations());
 
   const closeOut = () => {
     setAddress("");
-
-    //   onClose();
   };
-
-  const BorderlessTableCell = styled(TableCell)(() => ({
-    borderBottom: "none",
-  }));
 
   const handleValidations = (validationResponse) => {
     let validations = getDefaultValidations();
@@ -109,7 +77,6 @@ export default function CartPage() {
     };
     makePurchase(payload, user.accessToken)
       .then((response) => {
-        // setSnackBarOpen(true);
         dispatch(clearCart());
         enqueueSnackbar("Purchase Successful", { variant: "success" });
         closeOut();
@@ -141,8 +108,6 @@ export default function CartPage() {
     enqueueSnackbar("Product removed from cart", { variant: "success" });
   };
 
-  const lightBlue = theme.palette.mode === "light" ? blue[100] : blueGrey[900];
-
   return (
     <Container>
       <Typography variant="h3" sx={{ m: 2 }}>
@@ -173,14 +138,12 @@ export default function CartPage() {
               <Grid container sx={{ padding: "20px" }} spacing={2}>
                 <Grid item xs={2.5}>
                   <Card sx={{ maxWidth: 200 }}>
-                    {/* <CardActionArea> */}
                     <CardMedia
                       component="img"
                       height="200"
                       image={product.imageUrls && product.imageUrls[0]}
                       alt={product.name}
                     />
-                    {/* </ CardActionArea> */}
                   </Card>
                 </Grid>
                 <Grid item xs={5.5} textAlign="left">

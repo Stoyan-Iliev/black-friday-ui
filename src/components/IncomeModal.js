@@ -4,9 +4,8 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import { TextField, Alert, Typography, Grid } from "@mui/material";
-import styled from "@emotion/styled";
 import { useSelector } from "react-redux";
-import { createCampaign, getIncome } from "../api/backendRequests";
+import { getIncome } from "../api/backendRequests";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -24,7 +23,6 @@ const style = {
   boxShadow: 24,
   p: 4,
   justifyItems: "center",
-  zIndex: 10,
 };
 
 function getCorrectFormat(number) {
@@ -33,6 +31,11 @@ function getCorrectFormat(number) {
   }
 
   return number;
+}
+
+function getCorrectDateFormat(date) {
+  const arr = date.split("-");
+  return `${arr[1]}/${arr[2]}/${arr[0]}`;
 }
 
 function getDefaultValidations() {
@@ -63,23 +66,23 @@ export default function IncomeModal({ open, onClose }) {
   const closeOut = () => {
     setStartDate("");
     setEndDate("");
+    setIncome(null);
+    setErrorMessage("");
     onClose();
   };
 
   const getIncomeForDates = () => {
+    setIncome(null);
     const parsedStartDate = `${startDate.$y}-${getCorrectFormat(
       startDate.$m + 1
     )}-${getCorrectFormat(startDate.$D)}`;
     const parsedEndDate = `${endDate.$y}-${getCorrectFormat(
       endDate.$m + 1
     )}-${getCorrectFormat(endDate.$D)}`;
-    console.log(parsedStartDate);
-    console.log(parsedEndDate);
     getIncome(parsedStartDate, parsedEndDate, token)
       .then((response) => {
-        console.log(response);
-
         setIncome(response.data);
+        setErrorMessage("");
       })
       .catch((error) => {
         handleValidations(error.response.data);
@@ -135,36 +138,57 @@ export default function IncomeModal({ open, onClose }) {
                   }}
                   renderInput={(params) => <TextField {...params} />}
                 />
+                {errorMessage ? (
+                  <Alert severity="error">{errorMessage}</Alert>
+                ) : null}
               </LocalizationProvider>
-            </Stack>
-            {income &&
-              income.dayIncome.map((i) => {
-                console.log(i);
-                return (
-                  <Grid item xs={6}>
+              {income ? (
+                <>
+                  <Box
+                    style={{
+                      maxHeight: "40vh",
+                      overflow: "auto",
+                      width: "fitContent",
+                    }}
+                  >
+                    {income.dayIncome.map((i) => {
+                      return (
+                        <Grid container>
+                          <Grid item xs={6}>
+                            <Typography variant="h6">
+                              {getCorrectDateFormat(i.date)}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={6} textAlign="right">
+                            <Typography variant="h6" pr={"10px"}>
+                              {i.income.toFixed(2)} lv
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                      );
+                    })}
+                  </Box>
+                  <Grid item>
                     <Typography variant="h6">
-                      {i.date}: {i.income} lv
+                      Total Income: {income.totalIncome.toFixed(2)} lv
                     </Typography>
                   </Grid>
-                );
-              })}
-            <Grid item>
-              <Typography variant="h6">
-                Total Income: {income && income.totalIncome} lv
-              </Typography>
-            </Grid>
-            <Grid
-              item
-              style={{
-                display: "grid",
-                placeItems: "center",
-                marginTop: "16px",
-              }}
-            >
-              <Button variant="contained" onClick={getIncomeForDates}>
-                Calculate Income
-              </Button>
-            </Grid>
+                </>
+              ) : null}
+
+              <Grid
+                item
+                style={{
+                  display: "grid",
+                  placeItems: "center",
+                  marginTop: "16px",
+                }}
+              >
+                <Button variant="contained" onClick={getIncomeForDates}>
+                  Calculate Income
+                </Button>
+              </Grid>
+            </Stack>
           </Grid>
         </Box>
       </Modal>

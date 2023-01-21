@@ -13,7 +13,6 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { styled } from "@mui/system";
 import { useDispatch, useSelector } from "react-redux";
 import { addProduct } from "../../redux/features/CartSlice";
-import ProductImagePicker from "./ProductImagePicker";
 import { useSnackbar } from "notistack";
 import AddProduct from "../AddProduct";
 import { Menu, MenuItem } from "@mui/material";
@@ -22,7 +21,7 @@ export default function ProductHeader({ product, handleUpdateClose }) {
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
-  const { name, price, count, imageUrls } = product;
+  const { name, price, count } = product;
   const BorderlessTableCell = styled(TableCell)(() => ({
     borderBottom: "none",
   }));
